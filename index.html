@@ -1,491 +1,490 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>terra.terra - Piattaforma di Riattivazione Territoriale</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-body {
-font-family: 'Inter', sans-serif;
-background-color: #f6fdf9;
-color: #1a5e3a;
-overflow-x: hidden;
-scroll-behavior: smooth;
-}
-.container {
-max-width: 1280px;
-margin: 0 auto;
-padding: 1.5rem;
-}
-.section {
-padding: 6rem 0;
-opacity: 0;
-transform: translateY(20px);
-transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-}
-.section.fade-in {
-opacity: 1;
-transform: translateY(0);
-}
-.card {
-background-color: white;
-border-radius: 1.5rem;
-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
-padding: 2.5rem;
-transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.card:hover {
-transform: translateY(-5px);
-box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-.btn {
-padding: 0.75rem 2rem;
-border-radius: 9999px;
-font-weight: 600;
-transition: all 0.3s ease;
-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
-.btn-primary {
-background-color: #2e8b57;
-color: white;
-}
-.btn-primary:hover {
-background-color: #256b44;
-box-shadow: 0 6px 8px -2px rgba(0, 0, 0, 0.15);
-}
-.btn-outline {
-background-color: transparent;
-color: #2e8b57;
-border: 2px solid #2e8b57;
-}
-.btn-outline:hover {
-background-color: #2e8b57;
-color: white;
-}
-.pill {
-display: inline-block;
-padding: 0.25rem 0.75rem;
-border-radius: 9999px;
-font-size: 0.875rem;
-font-weight: 500;
-}
-.pill.e { background-color: #d1fae5; color: #065f46; }
-.pill.s { background-color: #dbeafe; color: #1e40af; }
-.pill.g { background-color: #e0f2fe; color: #0284c7; }
-.logo {
-display: inline-block;
-width: 2.5rem;
-height: 2.5rem;
-background-color: #2e8b57;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 1.5rem;
-color: white;
-margin-right: 0.5rem;
-}
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-.tab-button.active {
-background-color: #2e8b57;
-color: white;
-border-radius: 1rem;
-}
-.tab-button {
-transition: all 0.3s ease;
-padding: 0.75rem 1.5rem;
-border-radius: 1rem;
-}
-.input-field {
-transition: all 0.3s ease;
-border-radius: 0.75rem;
-box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-}
-.input-field:focus {
-box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.3);
-border-color: #2e8b57;
-outline: none;
-}
-/* Loading Spinner */
-.spinner {
-border: 4px solid rgba(0, 0, 0, 0.1);
-width: 36px;
-height: 36px;
-border-radius: 50%;
-border-left-color: #2e8b57;
-animation: spin 1s ease infinite;
-}
-@keyframes spin {
-0% { transform: rotate(0deg); }
-100% { transform: rotate(360deg); }
-}
-.loading-overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background-color: rgba(255, 255, 255, 0.8);
-display: flex;
-justify-content: center;
-align-items: center;
-z-index: 50;
-}
-/* Nuovo sfondo per l'homepage */
-.hero-bg {
-background-image: url('https://images.unsplash.com/photo-1542475510-9118c7d5c704?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
-background-size: cover;
-background-position: center;
-background-attachment: fixed; /* Parallax effect */
-position: relative;
-}
-.hero-bg::before {
-content: '';
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: linear-gradient(to bottom, rgba(246, 253, 249, 0.6) 0%, rgba(246, 253, 249, 0.9) 100%);
-}
-.hero-content {
-position: relative;
-z-index: 10;
-}
-/* Pulsante "Torna su" */
-#back-to-top-btn {
-position: fixed;
-bottom: 2rem;
-right: 2rem;
-background-color: #2e8b57;
-color: white;
-padding: 1rem;
-border-radius: 9999px;
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-opacity: 0;
-visibility: hidden;
-transition: opacity 0.3s ease, visibility 0.3s ease;
-z-index: 40;
-cursor: pointer;
-}
-#back-to-top-btn.is-visible {
-opacity: 1;
-visibility: visible;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>terra.terra - Piattaforma di Riattivazione Territoriale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f6fdf9;
+            color: #1a5e3a;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        .section {
+            padding: 6rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .section.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .card {
+            background-color: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            padding: 2.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #2e8b57;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #256b44;
+            box-shadow: 0 6px 8px -2px rgba(0, 0, 0, 0.15);
+        }
+        .btn-outline {
+            background-color: transparent;
+            color: #2e8b57;
+            border: 2px solid #2e8b57;
+        }
+        .btn-outline:hover {
+            background-color: #2e8b57;
+            color: white;
+        }
+        .pill {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .pill.e { background-color: #d1fae5; color: #065f46; }
+        .pill.s { background-color: #dbeafe; color: #1e40af; }
+        .pill.g { background-color: #e0f2fe; color: #0284c7; }
+        .logo {
+            display: inline-block;
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: #2e8b57;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin-right: 0.5rem;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tab-button.active {
+            background-color: #2e8b57;
+            color: white;
+            border-radius: 1rem;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+        }
+        .input-field {
+            transition: all 0.3s ease;
+            border-radius: 0.75rem;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+        }
+        .input-field:focus {
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.3);
+            border-color: #2e8b57;
+            outline: none;
+        }
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #2e8b57;
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+        /* Nuovo sfondo per l'homepage */
+        .hero-bg {
+            background-image: url('https://images.unsplash.com/photo-1542475510-9118c7d5c704?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax effect */
+            position: relative;
+        }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(246, 253, 249, 0.6) 0%, rgba(246, 253, 249, 0.9) 100%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+        /* Pulsante "Torna su" */
+        #back-to-top-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #2e8b57;
+            color: white;
+            padding: 1rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 40;
+            cursor: pointer;
+        }
+        #back-to-top-btn.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-br from-green-50 to-lime-50">
-<div id="loading-overlay" class="loading-overlay">
-<div class="spinner"></div>
-</div>
-<nav class="fixed top-0 w-full z-20 bg-white bg-opacity-80 backdrop-blur-md shadow-md">
-<div class="container flex justify-between items-center py-4">
-<a href="#" class="flex items-center text-2xl font-bold text-emerald-800">
-<span class="logo"> 🌿 </span>
-terra.terra
-</a>
-<div class="flex items-center space-x-4">
-<a href="#dashboard" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Dashboard</a>
-<a href="#find-land" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Trova Terreno</a>
-<a href="#how-it-works" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Come Funziona</a>
-<button id="login-btn" class="btn btn-primary text-sm px-4 py-2">Accedi</button>
-</div>
-</div>
-</nav>
-<div class="h-screen flex items-center justify-center text-center p-4 hero-bg">
-<div class="hero-content">
-<h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-emerald-800 leading-tight mb-4">
-Piattaforma di Riattivazione Territoriale
-</h1>
-<p class="text-xl sm:text-2xl text-emerald-700 max-w-3xl mx-auto mb-8">
-Un modello di sviluppo sostenibile basato sui principi **ESG** per contrastare l'abbandono dei terreni in Italia.
-</p>
-<div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-<a href="#about" class="btn btn-primary animate-bounce-custom">Scopri di più</a>
-<a href="#find-land" class="btn btn-outline">Trova un Terreno</a>
-</div>
-</div>
-</div>
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+    <nav class="fixed top-0 w-full z-20 bg-white bg-opacity-80 backdrop-blur-md shadow-md">
+        <div class="container flex justify-between items-center py-4">
+            <a href="#" class="flex items-center text-2xl font-bold text-emerald-800">
+                <span class="logo"> 🌿 </span>
+                terra.terra
+            </a>
+            <div class="flex items-center space-x-4">
+                <a href="#dashboard" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Dashboard</a>
+                <a href="#find-land" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Trova Terreno</a>
+                <a href="#how-it-works" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Come Funziona</a>
+                <button id="login-btn" class="btn btn-primary text-sm px-4 py-2">Accedi</button>
+            </div>
+        </div>
+    </nav>
+    <div class="h-screen flex items-center justify-center text-center p-4 hero-bg">
+        <div class="hero-content">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-emerald-800 leading-tight mb-4">
+                Piattaforma di Riattivazione Territoriale
+            </h1>
+            <p class="text-xl sm:text-2xl text-emerald-700 max-w-3xl mx-auto mb-8">
+                Un modello di sviluppo sostenibile basato sui principi **ESG** per contrastare l'abbandono dei terreni in Italia.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="#about" class="btn btn-primary animate-bounce-custom">Scopri di più</a>
+                <a href="#find-land" class="btn btn-outline">Trova un Terreno</a>
+            </div>
+        </div>
+    </div>
 
-<section id="about" class="section">
-<div class="container">
-<h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-6 text-center">
-Un Ecosistema Integrato per la Sostenibilità
-</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-<div class="card flex flex-col items-center text-center">
-<div class="pill e mb-4">Ambientale (E)</div>
-<h3 class="text-xl font-semibold mb-2 text-green-800">Rigenerazione e Agricoltura di Precisione</h3>
-<p class="text-gray-600">
-La piattaforma facilita la rigenerazione di suoli degradati, promuove la biodiversità e supporta pratiche di agricoltura sostenibile e di precisione con l'uso di AgriTech.
-</p>
-</div>
-<div class="card flex flex-col items-center text-center">
-<div class="pill s mb-4">Sociale (S)</div>
-<h3 class="text-xl font-semibold mb-2 text-blue-800">Comunità, Inclusione e Benessere</h3>
-<p class="text-gray-600">
-Risponde alla domanda di ritorno all'agricoltura, offrendo opportunità di inclusione lavorativa per categorie svantaggiate e rafforzando il tessuto comunitario.
-</p>
-</div>
-<div class="card flex flex-col items-center text-center">
-<div class="pill g mb-4">Governance (G)</div>
-<h3 class="text-xl font-semibold mb-2 text-sky-800">Trasparenza e Affidabilità</h3>
-<p class="text-gray-600">
-Utilizza la tecnologia blockchain per la tracciabilità e propone quadri contrattuali chiari, mitigando i rischi e costruendo un solido rapporto di fiducia.
-</p>
-</div>
-</div>
-</div>
-</section>
-<section id="find-land" class="section bg-green-50">
-<div class="container">
-<h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8 text-center">
-Trova il Terreno Perfetto per il Tuo Progetto
-</h2>
-<div class="card p-6 md:p-8">
-<p class="text-center text-gray-600 mb-6">Usa il nostro motore di ricerca avanzato per trovare terreni disponibili in tutta Italia.</p>
-<div class="flex flex-col sm:flex-row gap-4 mb-8">
-<input type="text" placeholder="Città, Regione o CAP" class="flex-1 p-3 rounded-lg border-2 border-gray-300 input-field">
-<select class="p-3 rounded-lg border-2 border-gray-300 input-field">
-<option>Tipo di Coltivazione</option>
-<option>Agricoltura Biologica</option>
-<option>Permacultura</option>
-<option>Orto Urbano</option>
-</select>
-<button class="btn btn-primary">Cerca Terreno</button>
-</div>
-<div id="search-results-section">
-<h3 class="text-xl font-semibold text-emerald-800 mb-4">Risultati di esempio</h3>
-<div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="dashboard" class="section">
-<div class="container">
-<h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8 text-center">
-La Tua Dashboard
-</h2>
-<div class="card p-6 md:p-8">
-<div class="text-center mb-6">
-<p class="text-sm font-medium text-gray-500">Il tuo ID utente è:</p>
-<p id="user-id-display" class="text-sm font-bold text-gray-700 break-all"></p>
-</div>
-<div class="flex flex-col md:flex-row gap-4 mb-8">
-<input id="project-name-input" type="text" placeholder="Nome del nuovo progetto" class="flex-1 p-3 rounded-lg border-2 border-gray-300 input-field">
-<button id="add-project-btn" class="btn btn-primary">Aggiungi Progetto</button>
-</div>
-<div>
-<h3 class="text-xl font-semibold mb-4 text-green-800">I Tuoi Progetti</h3>
-<div id="projects-list" class="space-y-4">
-<p class="text-gray-600 text-center">
-Caricamento progetti...
-</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<footer class="bg-gray-800 text-gray-200 py-8">
-<div class="container text-center">
-<p class="text-lg font-bold mb-2">terra.terra - Piattaforma di Riattivazione Territoriale</p>
-<p>&copy; 2024. Tutti i diritti riservati.</p>
-</div>
-</footer>
-<div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-30">
-<div class="bg-white rounded-xl p-8 max-w-sm w-full text-center">
-<h3 class="text-2xl font-bold text-green-800 mb-4">Accesso Riuscito!</h3>
-<p class="text-gray-600 mb-6">Sei stato autenticato come utente anonimo. Ora puoi aggiungere e visualizzare progetti nella tua dashboard.</p>
-<button id="close-modal-btn" class="btn btn-primary w-full">Inizia</button>
-</div>
-</div>
-<button id="back-to-top-btn" aria-label="Torna su">
-<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-</svg>
-</button>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-// Variabili che potrebbero non essere definite nell'ambiente di esecuzione
-let initialAuthToken = null;
-if (typeof __initial_auth_token !== 'undefined') {
-initialAuthToken = __initial_auth_token;
-}
-const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-let db, auth, userId;
-let isAuthReady = false;
-async function initFirebase() {
-try {
-const app = initializeApp(firebaseConfig);
-auth = getAuth(app);
-db = getFirestore(app);
-onAuthStateChanged(auth, async (user) => {
-if (user) {
-userId = user.uid;
-document.getElementById('user-id-display').textContent = userId;
-isAuthReady = true;
-console.log("Authenticated with user ID:", userId);
-setupFirestoreListener();
-document.getElementById('loading-overlay').style.display = 'none';
-} else {
-if (initialAuthToken) {
-await signInWithCustomToken(auth, initialAuthToken);
-} else {
-await signInAnonymously(auth);
-}
-}
-});
-} catch (error) {
-console.error("Error during Firebase initialization or authentication:", error);
-document.getElementById('loading-overlay').style.display = 'none';
-}
-}
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-6 text-center">
+                Un Ecosistema Integrato per la Sostenibilità
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="card flex flex-col items-center text-center">
+                    <div class="pill e mb-4">Ambientale (E)</div>
+                    <h3 class="text-xl font-semibold mb-2 text-green-800">Rigenerazione e Agricoltura di Precisione</h3>
+                    <p class="text-gray-600">
+                        La piattaforma facilita la rigenerazione di suoli degradati, promuove la biodiversità e supporta pratiche di agricoltura sostenibile e di precisione con l'uso di AgriTech.
+                    </p>
+                </div>
+                <div class="card flex flex-col items-center text-center">
+                    <div class="pill s mb-4">Sociale (S)</div>
+                    <h3 class="text-xl font-semibold mb-2 text-blue-800">Comunità, Inclusione e Benessere</h3>
+                    <p class="text-gray-600">
+                        Risponde alla domanda di ritorno all'agricoltura, offrendo opportunità di inclusione lavorativa per categorie svantaggiate e rafforzando il tessuto comunitario.
+                    </p>
+                </div>
+                <div class="card flex flex-col items-center text-center">
+                    <div class="pill g mb-4">Governance (G)</div>
+                    <h3 class="text-xl font-semibold mb-2 text-sky-800">Trasparenza e Affidabilità</h3>
+                    <p class="text-gray-600">
+                        Utilizza la tecnologia blockchain per la tracciabilità e propone quadri contrattuali chiari, mitigando i rischi e costruendo un solido rapporto di fiducia.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="find-land" class="section bg-green-50">
+        <div class="container">
+            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8 text-center">
+                Trova il Terreno Perfetto per il Tuo Progetto
+            </h2>
+            <div class="card p-6 md:p-8">
+                <p class="text-center text-gray-600 mb-6">Usa il nostro motore di ricerca avanzato per trovare terreni disponibili in tutta Italia.</p>
+                <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                    <input type="text" placeholder="Città, Regione o CAP" class="flex-1 p-3 rounded-lg border-2 border-gray-300 input-field">
+                    <select class="p-3 rounded-lg border-2 border-gray-300 input-field">
+                        <option>Tipo di Coltivazione</option>
+                        <option>Agricoltura Biologica</option>
+                        <option>Permacultura</option>
+                        <option>Orto Urbano</option>
+                    </select>
+                    <button class="btn btn-primary">Cerca Terreno</button>
+                </div>
+                <div id="search-results-section">
+                    <h3 class="text-xl font-semibold text-emerald-800 mb-4">Risultati di esempio</h3>
+                    <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="dashboard" class="section">
+        <div class="container">
+            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8 text-center">
+                La Tua Dashboard
+            </h2>
+            <div class="card p-6 md:p-8">
+                <div class="text-center mb-6">
+                    <p class="text-sm font-medium text-gray-500">Il tuo ID utente è:</p>
+                    <p id="user-id-display" class="text-sm font-bold text-gray-700 break-all"></p>
+                </div>
+                <div class="flex flex-col md:flex-row gap-4 mb-8">
+                    <input id="project-name-input" type="text" placeholder="Nome del nuovo progetto" class="flex-1 p-3 rounded-lg border-2 border-gray-300 input-field">
+                    <button id="add-project-btn" class="btn btn-primary">Aggiungi Progetto</button>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 text-green-800">I Tuoi Progetti</h3>
+                    <div id="projects-list" class="space-y-4">
+                        <p class="text-gray-600 text-center">
+                            Caricamento progetti...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="bg-gray-800 text-gray-200 py-8">
+        <div class="container text-center">
+            <p class="text-lg font-bold mb-2">terra.terra - Piattaforma di Riattivazione Territoriale</p>
+            <p>&copy; 2024. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-30">
+        <div class="bg-white rounded-xl p-8 max-w-sm w-full text-center">
+            <h3 class="text-2xl font-bold text-green-800 mb-4">Accesso Riuscito!</h3>
+            <p class="text-gray-600 mb-6">Sei stato autenticato come utente anonimo. Ora puoi aggiungere e visualizzare progetti nella tua dashboard.</p>
+            <button id="close-modal-btn" class="btn btn-primary w-full">Inizia</button>
+        </div>
+    </div>
+    <button id="back-to-top-btn" aria-label="Torna su">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </button>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-// Dati di esempio per i progetti in vetrina e la ricerca
-const sampleProjects = [
-{
-name: "Orto Urbano Collettivo",
-description: "Un progetto di agricoltura sociale che trasforma un'area urbana abbandonata in un orto per la comunità.",
-tags: [{ label: "Sociale", type: "s" }, { label: "Ambientale", type: "e" }],
-image: "https://images.unsplash.com/photo-1596765798083-0574f179c3b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
-},
-{
-name: "Vigneto Sostenibile",
-description: "Progetto che utilizza metodi di agricoltura biologica e di precisione per la coltivazione di uve, minimizzando l'impatto ambientale.",
-tags: [{ label: "Ambientale", type: "e" }, { label: "Governance", type: "g" }],
-image: "https://images.unsplash.com/photo-1544062828-b8ce77134c44?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
-},
-{
-name: "Bosco Urbano",
-description: "Un'iniziativa di riforestazione che crea un polmone verde nel cuore della città per migliorare la qualità dell'aria e della vita.",
-tags: [{ label: "Ambientale", type: "e" }, { label: "Sociale", type: "s" }],
-image: "https://images.unsplash.com/photo-1502447999882-944a69e7e224?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
-}
-];
-// Funzione per creare le schede dei progetti
-function createProjectCard(project) {
-const card = document.createElement('div');
-card.classList.add('card', 'p-6');
-card.innerHTML = `
-<img src="${project.image}" alt="${project.name}" class="rounded-lg mb-4 w-full h-auto object-cover">
-<div class="flex space-x-2 mb-2">
-${project.tags.map(tag => `<span class="pill ${tag.type}">${tag.label}</span>`).join('')}
-</div>
-<h4 class="text-xl font-semibold text-green-800 mb-2">${project.name}</h4>
-<p class="text-gray-600 text-sm">${project.description}</p>
-`;
-return card;
-}
-// Funzione per creare le schede dei tuoi progetti
-function createYourProjectCard(project) {
-const card = document.createElement('div');
-card.classList.add('p-4', 'bg-gray-100', 'rounded-lg');
-const timestamp = project.createdAt ? new Date(project.createdAt.seconds * 1000).toLocaleDateString() : 'Data non disponibile';
-card.innerHTML = `<span class="font-medium text-green-700">${project.name}:</span> Aggiunto il ${timestamp}`;
-return card;
-}
-function setupFirestoreListener() {
-if (!isAuthReady || !db) return;
-// Inizializza la lista con un messaggio di caricamento
-const projectsList = document.getElementById('projects-list');
-projectsList.innerHTML = `<p class="p-4 bg-gray-100 rounded-lg text-gray-600 text-center">Caricamento dei tuoi progetti...</p>`;
-const projectsCollection = collection(db, `artifacts/${appId}/users/${userId}/projects`);
+        let initialAuthToken = null;
+        if (typeof __initial_auth_token !== 'undefined') {
+            initialAuthToken = __initial_auth_token;
+        }
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        let db, auth, userId;
+        let isAuthReady = false;
 
-onSnapshot(projectsCollection, (snapshot) => {
-projectsList.innerHTML = '';
+        async function initFirebase() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        document.getElementById('user-id-display').textContent = userId;
+                        isAuthReady = true;
+                        console.log("Authenticated with user ID:", userId);
+                        setupFirestoreListener();
+                        document.getElementById('loading-overlay').style.display = 'none';
+                    } else {
+                        if (initialAuthToken) {
+                            await signInWithCustomToken(auth, initialAuthToken);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Error during Firebase initialization or authentication:", error);
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+        }
 
-snapshot.forEach((doc) => {
-const project = doc.data();
-projectsList.appendChild(createYourProjectCard(project));
-});
+        const sampleProjects = [
+            {
+                name: "Orto Urbano Collettivo",
+                description: "Un progetto di agricoltura sociale che trasforma un'area urbana abbandonata in un orto per la comunità.",
+                tags: [{ label: "Sociale", type: "s" }, { label: "Ambientale", type: "e" }],
+                image: "https://images.unsplash.com/photo-1596765798083-0574f179c3b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                name: "Vigneto Sostenibile",
+                description: "Progetto che utilizza metodi di agricoltura biologica e di precisione per la coltivazione di uve, minimizzando l'impatto ambientale.",
+                tags: [{ label: "Ambientale", type: "e" }, { label: "Governance", type: "g" }],
+                image: "https://images.unsplash.com/photo-1544062828-b8ce77134c44?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                name: "Bosco Urbano",
+                description: "Un'iniziativa di riforestazione che crea un polmone verde nel cuore della città per migliorare la qualità dell'aria e della vita.",
+                tags: [{ label: "Ambientale", type: "e" }, { label: "Sociale", type: "s" }],
+                image: "https://images.unsplash.com/photo-1502447999882-944a69e7e224?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+            }
+        ];
 
-if (snapshot.empty) {
-projectsList.innerHTML = `<p class="p-4 bg-gray-100 rounded-lg text-gray-600 text-center">Nessun progetto trovato. Aggiungine uno!</p>`;
-}
-}, (error) => {
-console.error("Error listening to projects:", error);
-projectsList.innerHTML = `<p class="p-4 bg-red-100 rounded-lg text-red-600 text-center">Errore nel caricamento dei progetti.</p>`;
-});
-}
+        function createProjectCard(project) {
+            const card = document.createElement('div');
+            card.classList.add('card', 'p-6');
+            card.innerHTML = `
+                <img src="${project.image}" alt="${project.name}" class="rounded-lg mb-4 w-full h-auto object-cover">
+                <div class="flex space-x-2 mb-2">
+                    ${project.tags.map(tag => `<span class="pill ${tag.type}">${tag.label}</span>`).join('')}
+                </div>
+                <h4 class="text-xl font-semibold text-green-800 mb-2">${project.name}</h4>
+                <p class="text-gray-600 text-sm">${project.description}</p>
+            `;
+            return card;
+        }
 
-document.addEventListener('DOMContentLoaded', () => {
-initFirebase();
-// Inietta i progetti di esempio nella sezione di ricerca
-const searchResultsGrid = document.getElementById('search-results-grid');
-sampleProjects.forEach(project => {
-const card = createProjectCard(project);
-searchResultsGrid.appendChild(card);
-});
-const sections = document.querySelectorAll('.section');
-const loginBtn = document.getElementById('login-btn');
-const loginModal = document.getElementById('login-modal');
-const closeModalBtn = document.getElementById('close-modal-btn');
-const addProjectBtn = document.getElementById('add-project-btn');
-const projectNameInput = document.getElementById('project-name-input');
-const backToTopBtn = document.getElementById('back-to-top-btn');
-const observerOptions = { root: null, rootMargin: '0px', threshold: 0.2 };
-const observer = new IntersectionObserver((entries, observer) => {
-entries.forEach(entry => {
-if (entry.isIntersecting) {
-entry.target.classList.add('fade-in');
-observer.unobserve(entry.target);
-}
-});
-}, observerOptions);
-sections.forEach(section => observer.observe(section));
-// Gestione del pulsante "Torna su"
-window.addEventListener('scroll', () => {
-if (window.scrollY > 300) {
-backToTopBtn.classList.add('is-visible');
-} else {
-backToTopBtn.classList.remove('is-visible');
-}
-});
-backToTopBtn.addEventListener('click', () => {
-window.scrollTo({
-top: 0,
-behavior: 'smooth'
-});
-});
-loginBtn.addEventListener('click', () => {
-loginModal.classList.remove('hidden');
-loginModal.classList.add('flex');
-});
-closeModalBtn.addEventListener('click', () => {
-loginModal.classList.add('hidden');
-loginModal.classList.remove('flex');
-document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
-});
-addProjectBtn.addEventListener('click', async () => {
-const projectName = projectNameInput.value.trim();
-if (projectName === "") {
-return;
-}
+        function createYourProjectCard(project) {
+            const card = document.createElement('div');
+            card.classList.add('p-4', 'bg-gray-100', 'rounded-lg');
+            const timestamp = project.createdAt ? new Date(project.createdAt.seconds * 1000).toLocaleDateString() : 'Data non disponibile';
+            card.innerHTML = `<span class="font-medium text-green-700">${project.name}:</span> Aggiunto il ${timestamp}`;
+            return card;
+        }
 
-if (!db || !userId) {
-console.error("Firebase not initialized or user not authenticated.");
-return;
-}
+        function setupFirestoreListener() {
+            if (!isAuthReady || !db) return;
+            const projectsList = document.getElementById('projects-list');
+            projectsList.innerHTML = `<p class="p-4 bg-gray-100 rounded-lg text-gray-600 text-center">Caricamento dei tuoi progetti...</p>`;
+            const projectsCollection = collection(db, `artifacts/${appId}/users/${userId}/projects`);
 
-try {
-const docRef = await addDoc(collection(db, `artifacts/${appId}/users/${userId}/projects`), {
-name: projectName,
-createdAt: serverTimestamp()
-});
-console.log("Document written with ID: ", docRef.id);
-projectNameInput.value = "";
-} catch (e) {
-console.error("Error adding document: ", e);
-}
-});
-});
-</script>
+            onSnapshot(projectsCollection, (snapshot) => {
+                projectsList.innerHTML = '';
+                snapshot.forEach((doc) => {
+                    const project = doc.data();
+                    projectsList.appendChild(createYourProjectCard(project));
+                });
+                if (snapshot.empty) {
+                    projectsList.innerHTML = `<p class="p-4 bg-gray-100 rounded-lg text-gray-600 text-center">Nessun progetto trovato. Aggiungine uno!</p>`;
+                }
+            }, (error) => {
+                console.error("Error listening to projects:", error);
+                projectsList.innerHTML = `<p class="p-4 bg-red-100 rounded-lg text-red-600 text-center">Errore nel caricamento dei progetti.</p>`;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+            const searchResultsGrid = document.getElementById('search-results-grid');
+            sampleProjects.forEach(project => {
+                const card = createProjectCard(project);
+                searchResultsGrid.appendChild(card);
+            });
+            const sections = document.querySelectorAll('.section');
+            const loginBtn = document.getElementById('login-btn');
+            const loginModal = document.getElementById('login-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const addProjectBtn = document.getElementById('add-project-btn');
+            const projectNameInput = document.getElementById('project-name-input');
+            const backToTopBtn = document.getElementById('back-to-top-btn');
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.2 };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            sections.forEach(section => observer.observe(section));
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTopBtn.classList.add('is-visible');
+                } else {
+                    backToTopBtn.classList.remove('is-visible');
+                }
+            });
+
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            loginBtn.addEventListener('click', () => {
+                loginModal.classList.remove('hidden');
+                loginModal.classList.add('flex');
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                loginModal.classList.add('hidden');
+                loginModal.classList.remove('flex');
+                document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            addProjectBtn.addEventListener('click', async () => {
+                const projectName = projectNameInput.value.trim();
+                if (projectName === "") {
+                    return;
+                }
+                if (!db || !userId) {
+                    console.error("Firebase not initialized or user not authenticated.");
+                    return;
+                }
+                try {
+                    const docRef = await addDoc(collection(db, `artifacts/${appId}/users/${userId}/projects`), {
+                        name: projectName,
+                        createdAt: serverTimestamp()
+                    });
+                    console.log("Document written with ID: ", docRef.id);
+                    projectNameInput.value = "";
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
