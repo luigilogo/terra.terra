@@ -136,12 +136,15 @@
         }
         /* Nuovo sfondo per l'homepage - Immagine dinamica e interattiva */
         .hero-bg {
-            background-image: url('https://images.unsplash.com/photo-1605721912443-41300959f632?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');
+            background-image: url('https://images.unsplash.com/photo-1543852786-1cf6624b9987?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
             position: relative;
+            height: 70vh; /* Nuova altezza per la sezione hero */
             overflow: hidden;
+            animation: hero-bg-pan-zoom 20s infinite alternate ease-in-out;
         }
+
         .hero-bg::before {
             content: '';
             position: absolute;
@@ -149,21 +152,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to bottom, rgba(246, 253, 249, 0.3) 0%, rgba(246, 253, 249, 0.7) 100%);
+            background: linear-gradient(to top, rgba(246, 253, 249, 1) 0%, rgba(246, 253, 249, 0.2) 100%);
             z-index: 1;
-        }
-        .hero-bg > img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            animation: hero-zoom-pan 20s infinite alternate ease-in-out;
-            z-index: 0;
-        }
-        .hero-bg {
-            animation: hero-bg-pan-zoom 20s infinite alternate ease-in-out;
         }
 
         @keyframes hero-bg-pan-zoom {
@@ -176,7 +166,6 @@
                 background-size: 100%;
             }
         }
-
         .hero-content {
             position: relative;
             z-index: 10;
@@ -221,21 +210,25 @@
             </div>
         </div>
     </nav>
-    <div class="h-screen flex items-center justify-center text-center p-4 hero-bg">
-        <div class="hero-content">
-            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-emerald-800 leading-tight mb-4">
-                Piattaforma di Riattivazione Territoriale
-            </h1>
-            <p class="text-xl sm:text-2xl text-emerald-700 max-w-3xl mx-auto mb-8">
-                Un modello di sviluppo sostenibile basato sui principi **ESG** per contrastare l'abbandono dei terreni in Italia.
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <a href="#about" class="btn btn-primary animate-bounce-custom">Scopri di più</a>
-                <a href="#find-land" class="btn btn-outline">Trova un Terreno</a>
+    <div class="hero-bg"></div>
+
+    <section id="our-mission" class="section -mt-48 relative z-20">
+        <div class="container">
+            <div class="card p-8 md:p-12 text-center hero-content">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-emerald-800 leading-tight mb-4">
+                    Piattaforma di Riattivazione Territoriale
+                </h1>
+                <p class="text-xl sm:text-2xl text-emerald-700 max-w-3xl mx-auto mb-8">
+                    Un modello di sviluppo sostenibile basato sui principi **ESG** per contrastare l'abbandono dei terreni in Italia.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#about" class="btn btn-primary animate-bounce-custom">Scopri di più</a>
+                    <a href="#find-land" class="btn btn-outline">Trova un Terreno</a>
+                </div>
             </div>
         </div>
-    </div>
-
+    </section>
+    
     <section id="about" class="section">
         <div class="container">
             <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-6 text-center">
