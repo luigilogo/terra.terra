@@ -46,6 +46,8 @@
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
         .btn-primary {
             background-color: #2e8b57;
@@ -134,17 +136,16 @@
             align-items: center;
             z-index: 50;
         }
-        /* Nuovo sfondo per l'homepage - Immagine dinamica e interattiva */
+        /* New Hero Section */
         .hero-bg {
-            background-image: url('https://images.unsplash.com/photo-1579624584281-b51f67732a90?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+            background-image: url('https://images.unsplash.com/photo-1621258169135-24151a66b57d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
             position: relative;
-            height: 70vh; /* Nuova altezza per la sezione hero */
+            height: 70vh;
             overflow: hidden;
             animation: hero-bg-pan-zoom 20s infinite alternate ease-in-out;
         }
-
         .hero-bg::before {
             content: '';
             position: absolute;
@@ -155,7 +156,6 @@
             background: linear-gradient(to top, rgba(246, 253, 249, 1) 0%, rgba(246, 253, 249, 0.2) 100%);
             z-index: 1;
         }
-
         @keyframes hero-bg-pan-zoom {
             0% {
                 background-position: 0% 0%;
@@ -190,6 +190,20 @@
             opacity: 1;
             visibility: visible;
         }
+        /* Ripple Effect */
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            animation: ripple 0.6s linear;
+            transform: scale(0);
+        }
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-green-50 to-lime-50">
@@ -203,13 +217,14 @@
                 terra.terra
             </a>
             <div class="flex items-center space-x-4">
-                <a href="#dashboard" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Dashboard</a>
-                <a href="#find-land" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Trova Terreno</a>
+                <a href="#about" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Chi Siamo</a>
                 <a href="#how-it-works" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Come Funziona</a>
+                <a href="#find-land" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Trova Terreno</a>
                 <button id="login-btn" class="btn btn-primary text-sm px-4 py-2">Accedi</button>
             </div>
         </div>
     </nav>
+
     <div class="hero-bg"></div>
 
     <section id="our-mission" class="section -mt-48 relative z-20">
@@ -228,12 +243,15 @@
             </div>
         </div>
     </section>
-    
+
     <section id="about" class="section">
         <div class="container">
             <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-6 text-center">
-                Un Ecosistema Integrato per la Sostenibilità
+                Chi Siamo: Un Ecosistema per la Sostenibilità
             </h2>
+            <p class="text-center text-gray-600 max-w-4xl mx-auto mb-12">
+                Siamo un team di esperti in agricoltura, tecnologia e sviluppo sostenibile uniti dalla passione per la nostra terra. La nostra missione è connettere le persone con i terreni agricoli abbandonati, trasformandoli in progetti produttivi e sostenibili che rispettano l'ambiente e rafforzano le comunità locali.
+            </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="card flex flex-col items-center text-center">
                     <div class="pill e mb-4">Ambientale (E)</div>
@@ -259,6 +277,60 @@
             </div>
         </div>
     </section>
+
+    <section id="how-it-works" class="section bg-lime-50">
+        <div class="container text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-12">
+                Come Funziona la Piattaforma
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="card p-6">
+                    <div class="text-4xl mb-4 text-emerald-600">1.</div>
+                    <h3 class="text-xl font-semibold mb-2 text-green-800">Esplora i Terreni</h3>
+                    <p class="text-gray-600">Cerca tra i terreni disponibili in tutta Italia e scopri quelli che si adattano al tuo progetto agricolo.</p>
+                </div>
+                <div class="card p-6">
+                    <div class="text-4xl mb-4 text-emerald-600">2.</div>
+                    <h3 class="text-xl font-semibold mb-2 text-green-800">Proponi il Tuo Progetto</h3>
+                    <p class="text-gray-600">Presenta la tua idea di rigenerazione. La nostra comunità e i proprietari valuteranno la tua proposta.</p>
+                </div>
+                <div class="card p-6">
+                    <div class="text-4xl mb-4 text-emerald-600">3.</div>
+                    <h3 class="text-xl font-semibold mb-2 text-green-800">Inizia a Coltivare</h3>
+                    <p class="text-gray-600">Con il supporto della nostra tecnologia e della nostra comunità, inizia a lavorare la terra in modo sostenibile.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="section">
+        <div class="container">
+            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-12 text-center">
+                Le Storie di Successo della Nostra Comunità
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card p-8 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1542601908-142c5457ef6d?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80" alt="Testimonianza 1" class="rounded-full w-24 h-24 object-cover mr-6">
+                    <div>
+                        <blockquote class="text-lg text-gray-700 italic">
+                            "Grazie a terra.terra ho trovato un terreno abbandonato e l'ho trasformato in un orto biologico. È un'esperienza incredibile!"
+                        </blockquote>
+                        <p class="mt-4 font-semibold text-emerald-700">- Marco Rossi, Agricoltore Urbano</p>
+                    </div>
+                </div>
+                <div class="card p-8 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1579624584281-b51f67732a90?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&h=100&q=80" alt="Testimonianza 2" class="rounded-full w-24 h-24 object-cover mr-6">
+                    <div>
+                        <blockquote class="text-lg text-gray-700 italic">
+                            "La piattaforma è trasparente e facile da usare. Abbiamo recuperato un'area incolta e ora la gestiamo come una vera comunità."
+                        </blockquote>
+                        <p class="mt-4 font-semibold text-emerald-700">- Famiglia Bianchi, Comunità Agricola</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="find-land" class="section bg-green-50">
         <div class="container">
             <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8 text-center">
@@ -431,6 +503,25 @@
                 projectsList.innerHTML = `<p class="p-4 bg-red-100 rounded-lg text-red-600 text-center">Errore nel caricamento dei progetti.</p>`;
             });
         }
+        
+        // Funzione per l'effetto ripple
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement('span');
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - (button.offsetLeft + radius)}px`;
+            circle.style.top = `${event.clientY - (button.offsetTop + radius)}px`;
+            circle.classList.add('ripple-effect');
+
+            const ripple = button.getElementsByClassName('ripple-effect')[0];
+            if (ripple) {
+                ripple.remove();
+            }
+            button.appendChild(circle);
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             initFirebase();
@@ -446,6 +537,8 @@
             const addProjectBtn = document.getElementById('add-project-btn');
             const projectNameInput = document.getElementById('project-name-input');
             const backToTopBtn = document.getElementById('back-to-top-btn');
+            const allButtons = document.querySelectorAll('.btn');
+
             const observerOptions = { root: null, rootMargin: '0px', threshold: 0.2 };
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
@@ -502,6 +595,10 @@
                 } catch (e) {
                     console.error("Error adding document: ", e);
                 }
+            });
+            
+            allButtons.forEach(button => {
+                button.addEventListener('click', createRipple);
             });
         });
     </script>
