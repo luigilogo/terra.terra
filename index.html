@@ -138,6 +138,48 @@
             align-items: center;
             z-index: 50;
         }
+        /* Nuovo sfondo per l'homepage */
+        .hero-bg {
+            background-image: url('https://images.unsplash.com/photo-1542475510-9118c7d5c704?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax effect */
+            position: relative;
+        }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(246, 253, 249, 0.6) 0%, rgba(246, 253, 249, 0.9) 100%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Pulsante "Torna su" */
+        #back-to-top-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #2e8b57;
+            color: white;
+            padding: 1rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 40;
+            cursor: pointer;
+        }
+        #back-to-top-btn.is-visible {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-green-50 to-lime-50">
@@ -164,8 +206,8 @@
     </nav>
 
     <!-- Hero Section -->
-    <div class="h-screen flex items-center justify-center text-center p-4">
-        <div class="intro-text">
+    <div class="h-screen flex items-center justify-center text-center p-4 hero-bg">
+        <div class="hero-content">
             <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-emerald-800 leading-tight mb-4">
                 Piattaforma di Riattivazione Territoriale
             </h1>
@@ -178,6 +220,7 @@
             </div>
         </div>
     </div>
+    
 
     <!-- About Section -->
     <section id="about" class="section">
@@ -292,6 +335,13 @@
             <button id="close-modal-btn" class="btn btn-primary w-full">Inizia</button>
         </div>
     </div>
+    
+    <!-- Pulsante "Torna su" -->
+    <button id="back-to-top-btn" aria-label="Torna su">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </button>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -343,19 +393,19 @@
                 name: "Orto Urbano Collettivo",
                 description: "Un progetto di agricoltura sociale che trasforma un'area urbana abbandonata in un orto per la comunità.",
                 tags: [{ label: "Sociale", type: "s" }, { label: "Ambientale", type: "e" }],
-                image: "https://placehold.co/400x250/dbeafe/1e40af?text=Orto+Urbano"
+                image: "https://images.unsplash.com/photo-1596765798083-0574f179c3b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
             },
             {
                 name: "Vigneto Sostenibile",
                 description: "Progetto che utilizza metodi di agricoltura biologica e di precisione per la coltivazione di uve, minimizzando l'impatto ambientale.",
                 tags: [{ label: "Ambientale", type: "e" }, { label: "Governance", type: "g" }],
-                image: "https://placehold.co/400x250/d1fae5/065f46?text=Vigneto+Sostenibile"
+                image: "https://images.unsplash.com/photo-1544062828-b8ce77134c44?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
             },
             {
                 name: "Bosco Urbano",
                 description: "Un'iniziativa di riforestazione che crea un polmone verde nel cuore della città per migliorare la qualità dell'aria e della vita.",
                 tags: [{ label: "Ambientale", type: "e" }, { label: "Sociale", type: "s" }],
-                image: "https://placehold.co/400x250/e0f2fe/0284c7?text=Bosco+Urbano"
+                image: "https://images.unsplash.com/photo-1502447999882-944a69e7e224?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
             }
         ];
 
@@ -425,8 +475,7 @@
             const closeModalBtn = document.getElementById('close-modal-btn');
             const addProjectBtn = document.getElementById('add-project-btn');
             const projectNameInput = document.getElementById('project-name-input');
-            const tabButtons = document.querySelectorAll('.tab-button');
-            const tabContents = document.querySelectorAll('.tab-content');
+            const backToTopBtn = document.getElementById('back-to-top-btn');
 
             const observerOptions = { root: null, rootMargin: '0px', threshold: 0.2 };
             const observer = new IntersectionObserver((entries, observer) => {
@@ -439,6 +488,22 @@
             }, observerOptions);
             sections.forEach(section => observer.observe(section));
 
+            // Gestione del pulsante "Torna su"
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTopBtn.classList.add('is-visible');
+                } else {
+                    backToTopBtn.classList.remove('is-visible');
+                }
+            });
+
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
             loginBtn.addEventListener('click', () => {
                 loginModal.classList.remove('hidden');
                 loginModal.classList.add('flex');
@@ -448,16 +513,6 @@
                 loginModal.classList.add('hidden');
                 loginModal.classList.remove('flex');
                 document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
-            });
-
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    const tabId = button.dataset.tab;
-                    button.classList.add('active');
-                    document.getElementById(tabId).classList.add('active');
-                });
             });
 
             addProjectBtn.addEventListener('click', async () => {
