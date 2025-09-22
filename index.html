@@ -288,12 +288,6 @@
             border-radius: 1.5rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
             overflow: hidden;
-            animation: pulse-border 2s infinite ease-in-out;
-        }
-        @keyframes pulse-border {
-            0% { box-shadow: 0 0 0 0 rgba(46, 139, 87, 0.4); }
-            50% { box-shadow: 0 0 0 10px rgba(46, 139, 87, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 139, 87, 0); }
         }
         .data-overlay {
             position: absolute;
@@ -305,15 +299,17 @@
             transition: opacity 0.5s ease-in-out;
             background-size: cover;
             background-position: center;
+            /* Nuove proprietà per l'effetto wow */
+            mix-blend-mode: multiply;
         }
         .data-overlay.active {
             opacity: 1;
         }
         .data-overlay.soil-quality {
-            background-image: url('https://i.imgur.com/iR37yC0.jpeg'); /* Immagine per la qualità del suolo */
+            background-image: url('https://i.imgur.com/nJg3z65.png'); /* Mappa di calore per la qualità del suolo */
         }
         .data-overlay.topography {
-            background-image: url('https://i.imgur.com/i76oY04.jpeg'); /* Immagine per il rilievo topografico */
+            background-image: url('https://i.imgur.com/k2e453C.png'); /* Linee di contorno per il rilievo topografico */
         }
     </style>
 </head>
@@ -487,7 +483,7 @@
                 Collaborazioni per il Sociale
             </h2>
             <p class="text-gray-600 max-w-4xl mx-auto">
-                bla.
+                blaa.
             </p>
         </div>
     </section>
@@ -497,7 +493,7 @@
                 Policy e Trasparenza
             </h2>
             <p class="text-gray-600 max-w-4xl mx-auto">
-                bla bla.
+                bla.
             </p>
         </div>
     </section>
