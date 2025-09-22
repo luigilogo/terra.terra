@@ -613,28 +613,44 @@
                 description: "Un progetto di agricoltura sociale che trasforma un'area urbana abbandonata in un orto per la comunità.",
                 tags: [{ label: "Sociale", type: "s" }, { label: "Ambientale", type: "e" }],
                 image: "https://www.infobuildenergia.it/wp-content/uploads/2019/04/esempio-orto-urbano.jpg",
-                coords: [39.3087, 16.3155] // Rende
+                coords: [39.3087, 16.3155],
+                location: "Rende (CS), Calabria",
+                size: "2 ettari",
+                cropType: "Colture miste (orticole)",
+                waterAvailability: "Sì"
             },
             {
                 name: "Vigneto Sostenibile",
                 description: "Progetto che utilizza metodi di agricoltura biologica e di precisione per la coltivazione di uve, minimizzando l'impatto ambientale.",
                 tags: [{ label: "Ambientale", type: "e" }, { label: "Governance", type: "g" }],
                 image: "https://static.tecnichenuove.it/vigneviniequalita/2023/06/bella-vista-di-un-vigneto-immerso-nel-verde-delle-colline-al-tramonto.jpg",
-                coords: [39.7719, 16.1557] // Morano Calabro
+                coords: [39.7719, 16.1557],
+                location: "Morano Calabro (CS), Calabria",
+                size: "15 ettari",
+                cropType: "Vigneto",
+                waterAvailability: "Sì"
             },
             {
                 name: "Bosco Urbano",
                 description: "Un'iniziativa di riforestazione che crea un polmone verde nel cuore della città per migliorare la qualità dell'aria e della vita.",
                 tags: [{ label: "Ambientale", type: "e" }, { label: "Sociale", type: "s" }],
                 image: "https://www.viaggiareinbrianza.it/wp-content/uploads/2021/05/lissone-bosco-urbano.jpg",
-                coords: [39.2974, 16.2483] // Cosenza
+                coords: [39.2974, 16.2483],
+                location: "Cosenza, Calabria",
+                size: "5 ettari",
+                cropType: "Bosco e alberi da frutto",
+                waterAvailability: "No"
             },
             {
                 name: "Fattoria Didattica",
                 description: "Una fattoria che offre percorsi educativi per le scuole e le famiglie, promuovendo la conoscenza del ciclo agricolo e della biodiversità.",
                 tags: [{ label: "Sociale", type: "s" }, { label: "Ambientale", type: "e" }],
                 image: "https://www.comune.milano.it/documents/20126/66385317/368817346_662369689258273_4654522857021703666_n.jpg/2d698e83-39d0-405e-f00e-c21e6498a584?t=1697204642468",
-                coords: [39.6738, 15.8236] // Diamante
+                coords: [39.6738, 15.8236],
+                location: "Diamante (CS), Calabria",
+                size: "8 ettari",
+                cropType: "Orti e allevamento",
+                waterAvailability: "Sì"
             }
         ];
 
@@ -719,7 +735,23 @@
             const projectCoords = [];
             sampleProjects.forEach(project => {
                 const marker = L.marker(project.coords).addTo(map);
-                marker.bindPopup(`<b>${project.name}</b><br>${project.description}`);
+                
+                // Creazione del contenuto HTML per il popup
+                const popupContent = `
+                    <div style="font-family: 'Inter', sans-serif;">
+                        <h4 style="font-weight: 600; font-size: 1.1rem; color: #1a5e3a; margin-bottom: 0.5rem;">${project.name}</h4>
+                        <p style="margin-bottom: 0.75rem;">${project.description}</p>
+                        <hr style="border-top: 1px solid #e2e8f0; margin-bottom: 0.75rem;">
+                        <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.5;">
+                            <li><strong>Dove si trova?</strong> ${project.location}</li>
+                            <li><strong>Dimensione:</strong> ${project.size}</li>
+                            <li><strong>Tipologia di coltura:</strong> ${project.cropType}</li>
+                            <li><strong>Disponibilità acqua:</strong> ${project.waterAvailability}</li>
+                        </ul>
+                    </div>
+                `;
+
+                marker.bindPopup(popupContent);
                 projectCoords.push(project.coords);
 
                 // Aggiungi il listener di click al marker per zoommare
