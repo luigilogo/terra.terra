@@ -37,7 +37,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.02); /* Modifica per l'ingrandimento */
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         .btn {
@@ -204,6 +204,50 @@
                 opacity: 0;
             }
         }
+        /* New Carousel CSS */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .carousel-slide {
+            min-width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1.5rem;
+            padding: 0 1rem; /* Adjust padding for visual balance */
+        }
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 1rem;
+        }
+        .carousel-btn {
+            background-color: rgba(46, 139, 87, 0.8);
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 20;
+            transition: background-color 0.3s ease;
+        }
+        .carousel-btn:hover {
+            background-color: rgba(46, 139, 87, 1);
+        }
+        @media (max-width: 768px) {
+            .carousel-slide {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-green-50 to-lime-50">
@@ -213,7 +257,7 @@
     <nav class="fixed top-0 w-full z-20 bg-white bg-opacity-80 backdrop-blur-md shadow-md">
         <div class="container flex justify-between items-center py-4">
             <a href="#" class="flex items-center text-2xl font-bold text-emerald-800">
-                <span class="logo"> 🌿 </span>
+                <span class="logo">🌿</span>
                 terra.terra
             </a>
             <div class="flex items-center space-x-4">
@@ -224,14 +268,12 @@
             </div>
         </div>
     </nav>
-
     <div class="hero-bg"></div>
-
     <section id="our-mission" class="section -mt-48 relative z-20">
         <div class="container">
             <div class="card p-8 md:p-12 text-center hero-content">
                 <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-emerald-800 leading-tight mb-4">
-                    Piattaforma di Riattivazione Territoriale
+                    <span id="animated-title"></span>
                 </h1>
                 <p class="text-xl sm:text-2xl text-emerald-700 max-w-3xl mx-auto mb-8">
                     Un modello di sviluppo sostenibile basato sui principi ESG per contrastare l'abbandono dei terreni in Italia.
@@ -243,14 +285,14 @@
             </div>
         </div>
     </section>
-
     <section id="about" class="section">
         <div class="container">
             <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-6 text-center">
                 Chi Siamo: Un Ecosistema per la Sostenibilità
             </h2>
             <p class="text-center text-gray-600 max-w-4xl mx-auto mb-12">
-                Siamo un team di esperti in agricoltura, tecnologia e sviluppo sostenibile uniti dalla passione per la nostra terra. La nostra missione è connettere le persone con i terreni agricoli abbandonati, trasformandoli in progetti produttivi e sostenibili che rispettano l'ambiente e rafforzano le comunità locali.
+                Siamo un team di esperti in agricoltura, tecnologia e sviluppo sostenibile uniti dalla passione per la nostra terra.
+                La nostra missione è connettere le persone con i terreni agricoli abbandonati, trasformandoli in progetti produttivi e sostenibili che rispettano l'ambiente e rafforzano le comunità locali.
             </p>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="card flex flex-col items-center text-center">
@@ -277,7 +319,6 @@
             </div>
         </div>
     </section>
-
     <section id="how-it-works" class="section bg-lime-50">
         <div class="container text-center">
             <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-12">
@@ -302,7 +343,6 @@
             </div>
         </div>
     </section>
-
     <section id="find-land" class="section bg-green-50">
         <div class="container">
             <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8 text-center">
@@ -322,7 +362,17 @@
                 </div>
                 <div id="search-results-section">
                     <h3 class="text-xl font-semibold text-emerald-800 mb-4">Risultati di esempio</h3>
-                    <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="carousel-container">
+                        <div id="carousel-track" class="carousel-track">
+                            </div>
+                        <div class="carousel-nav">
+                            <button id="carousel-prev-btn" class="carousel-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                            </button>
+                            <button id="carousel-next-btn" class="carousel-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -390,6 +440,7 @@
                 const app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
+
                 onAuthStateChanged(auth, async (user) => {
                     if (user) {
                         userId = user.uid;
@@ -430,6 +481,12 @@
                 description: "Un'iniziativa di riforestazione che crea un polmone verde nel cuore della città per migliorare la qualità dell'aria e della vita.",
                 tags: [{ label: "Ambientale", type: "e" }, { label: "Sociale", type: "s" }],
                 image: "https://www.viaggiareinbrianza.it/wp-content/uploads/2021/05/lissone-bosco-urbano.jpg"
+            },
+            {
+                name: "Fattoria Didattica",
+                description: "Una fattoria che offre percorsi educativi per le scuole e le famiglie, promuovendo la conoscenza del ciclo agricolo e della biodiversità.",
+                tags: [{ label: "Sociale", type: "s" }, { label: "Ambientale", type: "e" }],
+                image: "https://www.comune.milano.it/documents/20126/66385317/368817346_662369689258273_4654522857021703666_n.jpg/2d698e83-39d0-405e-f00e-c21e6498a584?t=1697204642468"
             }
         ];
 
@@ -460,7 +517,6 @@
             const projectsList = document.getElementById('projects-list');
             projectsList.innerHTML = `<p class="p-4 bg-gray-100 rounded-lg text-gray-600 text-center">Caricamento dei tuoi progetti...</p>`;
             const projectsCollection = collection(db, `artifacts/${appId}/users/${userId}/projects`);
-
             onSnapshot(projectsCollection, (snapshot) => {
                 projectsList.innerHTML = '';
                 snapshot.forEach((doc) => {
@@ -475,19 +531,17 @@
                 projectsList.innerHTML = `<p class="p-4 bg-red-100 rounded-lg text-red-600 text-center">Errore nel caricamento dei progetti.</p>`;
             });
         }
-        
+
         // Funzione per l'effetto ripple
         function createRipple(event) {
             const button = event.currentTarget;
             const circle = document.createElement('span');
             const diameter = Math.max(button.clientWidth, button.clientHeight);
             const radius = diameter / 2;
-
             circle.style.width = circle.style.height = `${diameter}px`;
             circle.style.left = `${event.clientX - (button.offsetLeft + radius)}px`;
             circle.style.top = `${event.clientY - (button.offsetTop + radius)}px`;
             circle.classList.add('ripple-effect');
-
             const ripple = button.getElementsByClassName('ripple-effect')[0];
             if (ripple) {
                 ripple.remove();
@@ -495,13 +549,53 @@
             button.appendChild(circle);
         }
 
+        // Funzione per animazione testo "macchina da scrivere"
+        function typeWriterEffect(elementId, text, speed) {
+            const element = document.getElementById(elementId);
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Funzioni per il carosello
+        let currentSlide = 0;
+        const projectsPerSlide = 3;
+        function updateCarousel() {
+            const track = document.getElementById('carousel-track');
+            const totalSlides = Math.ceil(sampleProjects.length / projectsPerSlide);
+            const offset = -currentSlide * 100;
+            track.style.transform = `translateX(${offset}%)`;
+        }
+
+        function createCarouselSlides() {
+            const track = document.getElementById('carousel-track');
+            track.innerHTML = '';
+            for (let i = 0; i < sampleProjects.length; i += projectsPerSlide) {
+                const slide = document.createElement('div');
+                slide.classList.add('carousel-slide');
+                for (let j = 0; j < projectsPerSlide && (i + j) < sampleProjects.length; j++) {
+                    const card = createProjectCard(sampleProjects[i + j]);
+                    slide.appendChild(card);
+                }
+                track.appendChild(slide);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             initFirebase();
-            const searchResultsGrid = document.getElementById('search-results-grid');
-            sampleProjects.forEach(project => {
-                const card = createProjectCard(project);
-                searchResultsGrid.appendChild(card);
-            });
+            createCarouselSlides();
+            
+            // Inizializza animazioni e carosello
+            const titleText = "Piattaforma di Riattivazione Territoriale";
+            document.getElementById('animated-title').textContent = '';
+            typeWriterEffect('animated-title', titleText, 50);
+
             const sections = document.querySelectorAll('.section');
             const loginBtn = document.getElementById('login-btn');
             const loginModal = document.getElementById('login-modal');
@@ -510,6 +604,20 @@
             const projectNameInput = document.getElementById('project-name-input');
             const backToTopBtn = document.getElementById('back-to-top-btn');
             const allButtons = document.querySelectorAll('.btn');
+
+            const carouselNextBtn = document.getElementById('carousel-next-btn');
+            const carouselPrevBtn = document.getElementById('carousel-prev-btn');
+            const totalSlides = Math.ceil(sampleProjects.length / projectsPerSlide);
+
+            carouselNextBtn.addEventListener('click', () => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                updateCarousel();
+            });
+
+            carouselPrevBtn.addEventListener('click', () => {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                updateCarousel();
+            });
 
             const observerOptions = { root: null, rootMargin: '0px', threshold: 0.2 };
             const observer = new IntersectionObserver((entries, observer) => {
@@ -520,6 +628,7 @@
                     }
                 });
             }, observerOptions);
+
             sections.forEach(section => observer.observe(section));
 
             window.addEventListener('scroll', () => {
@@ -568,7 +677,7 @@
                     console.error("Error adding document: ", e);
                 }
             });
-            
+
             allButtons.forEach(button => {
                 button.addEventListener('click', createRipple);
             });
