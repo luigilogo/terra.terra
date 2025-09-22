@@ -243,7 +243,6 @@
                 grid-template-columns: repeat(1, minmax(0, 1fr));
             }
         }
-        /* Stili per il modal di modifica */
         .modal {
             position: fixed;
             top: 0;
@@ -286,6 +285,8 @@
             <div class="flex items-center space-x-4">
                 <a href="#about" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Chi Siamo</a>
                 <a href="#how-it-works" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Come Funziona</a>
+                <a href="#social-collaborations" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Collaborazioni per il sociale</a>
+                <a href="#policy" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Policy</a>
                 <a href="#find-land" class="text-gray-600 hover:text-emerald-700 font-medium hidden md:block">Trova Terreno</a>
                 <button id="login-btn" class="btn btn-primary text-sm px-4 py-2">Accedi</button>
             </div>
@@ -364,6 +365,26 @@
                     <p class="text-gray-600">Con il supporto della nostra tecnologia e della nostra comunità, inizia a lavorare la terra in modo sostenibile.</p>
                 </div>
             </div>
+        </div>
+    </section>
+    <section id="social-collaborations" class="section">
+        <div class="container text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8">
+                Collaborazioni per il Sociale
+            </h2>
+            <p class="text-gray-600 max-w-4xl mx-auto">
+                In questa sezione potrai descrivere le tue collaborazioni con organizzazioni non-profit, associazioni e enti che supportano progetti a impatto sociale.
+            </p>
+        </div>
+    </section>
+    <section id="policy" class="section bg-lime-50">
+        <div class="container text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8">
+                Policy e Trasparenza
+            </h2>
+            <p class="text-gray-600 max-w-4xl mx-auto">
+                Qui potrai inserire i dettagli relativi alla tua privacy policy, ai termini di servizio e a tutte le normative che regolano la piattaforma per garantire massima trasparenza e fiducia.
+            </p>
         </div>
     </section>
     <section id="find-land" class="section bg-green-50">
@@ -559,13 +580,11 @@
             return card;
         }
 
-        // Funzione aggiornata per creare le card dei progetti dell'utente
         function createYourProjectCard(project, docId) {
             const card = document.createElement('div');
             card.classList.add('p-4', 'bg-gray-100', 'rounded-lg', 'relative', 'group');
             const timestamp = project.createdAt ? new Date(project.createdAt.seconds * 1000).toLocaleDateString() : 'Data non disponibile';
             
-            // Icone e bottoni per modifica ed eliminazione
             const actionButtons = document.createElement('div');
             actionButtons.classList.add('absolute', 'top-2', 'right-2', 'flex', 'space-x-2', 'opacity-0', 'group-hover:opacity-100', 'transition-opacity');
             
@@ -594,7 +613,6 @@
             return card;
         }
 
-        // Funzione per eliminare un progetto
         async function deleteProject(docId) {
             if (confirm("Sei sicuro di voler eliminare questo progetto?")) {
                 const projectRef = doc(db, `artifacts/${appId}/users/${userId}/projects`, docId);
@@ -608,7 +626,6 @@
             }
         }
         
-        // Funzione per aprire il modal di modifica
         function openEditModal(docId, project) {
             const editModal = document.getElementById('edit-modal');
             document.getElementById('edit-project-id').value = docId;
@@ -619,7 +636,6 @@
             editModal.style.display = 'flex';
         }
 
-        // Funzione per salvare le modifiche di un progetto
         async function saveEdit() {
             const docId = document.getElementById('edit-project-id').value;
             const newName = document.getElementById('edit-project-name').value;
