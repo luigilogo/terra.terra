@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>terra.terra - Piattaforma di Riattivazione Territoriale</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p41B9p6D+V80uR7A4+R609n4H5F0wWw83+iT2u6T9q8=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
@@ -280,7 +280,7 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-green-50 to-lime-50">
-    <div id="loading-overlay" class="loading-overlay">
+    <div id="loading-overlay" class="loading-overlay hidden">
         <div class="spinner"></div>
     </div>
     <nav class="fixed top-0 w-full z-20 bg-white bg-opacity-80 backdrop-blur-md shadow-md">
@@ -433,7 +433,7 @@
             </p>
         </div>
     </section>
-    <section id="dashboard" class="section">
+    <section id="dashboard" class="section hidden">
         <div class="container">
             <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8 text-center">
                 La Tua Dashboard
@@ -461,7 +461,7 @@
                     <h3 class="text-xl font-semibold mb-4 text-green-800">I Tuoi Progetti</h3>
                     <div id="projects-list" class="space-y-4">
                         <p class="text-gray-600 text-center">
-                            Caricamento progetti...
+                            Nessun progetto trovato. Aggiungine uno!
                         </p>
                     </div>
                 </div>
@@ -483,7 +483,7 @@
     <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-30">
         <div class="bg-white rounded-xl p-8 max-w-sm w-full text-center">
             <h3 class="text-2xl font-bold text-green-800 mb-4">Accesso Riuscito!</h3>
-            <p class="text-gray-600 mb-6">Sei stato autenticato come utente anonimo. Ora puoi aggiungere e visualizzare progetti nella tua dashboard.</p>
+            <p class="text-gray-600 mb-6">Sei stato autenticato come utente anonimo simulato. Ora puoi aggiungere e visualizzare progetti nella tua dashboard.</p>
             <button id="close-modal-btn" class="btn btn-primary w-full">Inizia</button>
         </div>
     </div>
@@ -508,48 +508,103 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
     </button>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-29j+i8S2Gv/v4L0bB9Ew8+Gk9E+sE7f+Wj6Kj6G8A2A=" crossorigin=""></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        let initialAuthToken = null;
-        if (typeof __initial_auth_token !== 'undefined') {
-            initialAuthToken = __initial_auth_token;
-        }
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        let db, auth, userId;
-        let isAuthReady = false;
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        let simulatedProjects = [];
+        let simulatedUserId = null;
         let map;
 
-        async function initFirebase() {
-            try {
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
+        function generateRandomId() {
+            return 'user-' + Math.random().toString(36).substring(2, 15);
+        }
 
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        document.getElementById('user-id-display').textContent = userId;
-                        isAuthReady = true;
-                        console.log("Authenticated with user ID:", userId);
-                        setupFirestoreListener();
-                        document.getElementById('loading-overlay').style.display = 'none';
-                    } else {
-                        if (initialAuthToken) {
-                            await signInWithCustomToken(auth, initialAuthToken);
-                        } else {
-                            await signInAnonymously(auth);
-                        }
-                    }
-                });
-            } catch (error) {
-                console.error("Error during Firebase initialization or authentication:", error);
-                document.getElementById('loading-overlay').style.display = 'none';
+        function renderProjects() {
+            const projectsList = document.getElementById('projects-list');
+            projectsList.innerHTML = '';
+            if (simulatedProjects.length === 0) {
+                projectsList.innerHTML = `<p class="p-4 bg-gray-100 rounded-lg text-gray-600 text-center">Nessun progetto trovato. Aggiungine uno!</p>`;
+                return;
             }
+            simulatedProjects.forEach((project, index) => {
+                projectsList.appendChild(createYourProjectCard(project, index));
+            });
+        }
+
+        function createYourProjectCard(project, id) {
+            const card = document.createElement('div');
+            card.classList.add('p-4', 'bg-gray-100', 'rounded-lg', 'relative', 'group');
+            const timestamp = project.createdAt ? new Date(project.createdAt).toLocaleDateString() : 'Data non disponibile';
+            
+            const actionButtons = document.createElement('div');
+            actionButtons.classList.add('absolute', 'top-2', 'right-2', 'flex', 'space-x-2', 'opacity-0', 'group-hover:opacity-100', 'transition-opacity');
+            
+            const editBtn = document.createElement('button');
+            editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 hover:text-green-700" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zm-1.828 4.654a1 1 0 01-1.414 1.414l-4.828 4.828a1 1 0 01-1.414 0l-1.414-1.414a1 1 0 010-1.414l4.828-4.828a1 1 0 011.414-1.414l.707-.707a.5.5 0 01.707 0l2.828 2.828a.5.5 0 010 .707l-2.828 2.828zM3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>`;
+            editBtn.onclick = () => openEditModal(id, project);
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 hover:text-red-700" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>`;
+            deleteBtn.onclick = () => deleteProject(id);
+
+            actionButtons.appendChild(editBtn);
+            actionButtons.appendChild(deleteBtn);
+
+            card.innerHTML = `
+                <h4 class="font-bold text-green-700 text-lg mb-1">${project.name}</h4>
+                ${project.image ? `<img src="${project.image}" alt="${project.name}" class="rounded-lg mb-2 w-full max-h-48 object-cover">` : ''}
+                <p class="text-sm text-gray-600 mb-2">${project.description || 'Nessuna descrizione.'}</p>
+                <div class="flex items-center space-x-2 text-xs">
+                    <span class="font-medium text-gray-500">Stato: <span class="font-semibold text-green-800">${project.status || 'Non specificato'}</span></span>
+                    <span class="text-gray-400">•</span>
+                    <span class="font-medium text-gray-500">Aggiunto il: ${timestamp}</span>
+                </div>
+            `;
+            card.appendChild(actionButtons);
+            return card;
+        }
+
+        function deleteProject(id) {
+            if (confirm("Sei sicuro di voler eliminare questo progetto?")) {
+                simulatedProjects.splice(id, 1);
+                renderProjects();
+                alert("Progetto eliminato con successo.");
+            }
+        }
+        
+        function openEditModal(id, project) {
+            const editModal = document.getElementById('edit-modal');
+            document.getElementById('edit-project-id').value = id;
+            document.getElementById('edit-project-name').value = project.name;
+            document.getElementById('edit-project-status').value = project.status || 'In Corso';
+            document.getElementById('edit-project-description').value = project.description || '';
+            document.getElementById('edit-project-image').value = project.image || '';
+            editModal.style.display = 'flex';
+        }
+
+        function saveEdit() {
+            const id = document.getElementById('edit-project-id').value;
+            const newName = document.getElementById('edit-project-name').value;
+            const newStatus = document.getElementById('edit-project-status').value;
+            const newDescription = document.getElementById('edit-project-description').value;
+            const newImage = document.getElementById('edit-project-image').value;
+
+            if (newName.trim() === "") {
+                alert("Il nome del progetto non può essere vuoto.");
+                return;
+            }
+
+            simulatedProjects[id] = {
+                ...simulatedProjects[id],
+                name: newName,
+                status: newStatus,
+                description: newDescription,
+                image: newImage,
+                updatedAt: new Date().toISOString()
+            };
+            
+            renderProjects();
+            alert("Progetto aggiornato con successo.");
+            document.getElementById('edit-modal').style.display = 'none';
         }
 
         const sampleProjects = [
@@ -595,111 +650,6 @@
                 <p class="text-gray-600 text-sm">${project.description}</p>
             `;
             return card;
-        }
-
-        function createYourProjectCard(project, docId) {
-            const card = document.createElement('div');
-            card.classList.add('p-4', 'bg-gray-100', 'rounded-lg', 'relative', 'group');
-            const timestamp = project.createdAt ? new Date(project.createdAt.seconds * 1000).toLocaleDateString() : 'Data non disponibile';
-            
-            const actionButtons = document.createElement('div');
-            actionButtons.classList.add('absolute', 'top-2', 'right-2', 'flex', 'space-x-2', 'opacity-0', 'group-hover:opacity-100', 'transition-opacity');
-            
-            const editBtn = document.createElement('button');
-            editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 hover:text-green-700" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zm-1.828 4.654a1 1 0 01-1.414 1.414l-4.828 4.828a1 1 0 01-1.414 0l-1.414-1.414a1 1 0 010-1.414l4.828-4.828a1 1 0 011.414-1.414l.707-.707a.5.5 0 01.707 0l2.828 2.828a.5.5 0 010 .707l-2.828 2.828zM3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>`;
-            editBtn.onclick = () => openEditModal(docId, project);
-            
-            const deleteBtn = document.createElement('button');
-            deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 hover:text-red-700" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>`;
-            deleteBtn.onclick = () => deleteProject(docId);
-
-            actionButtons.appendChild(editBtn);
-            actionButtons.appendChild(deleteBtn);
-
-            card.innerHTML = `
-                <h4 class="font-bold text-green-700 text-lg mb-1">${project.name}</h4>
-                ${project.image ? `<img src="${project.image}" alt="${project.name}" class="rounded-lg mb-2 w-full max-h-48 object-cover">` : ''}
-                <p class="text-sm text-gray-600 mb-2">${project.description || 'Nessuna descrizione.'}</p>
-                <div class="flex items-center space-x-2 text-xs">
-                    <span class="font-medium text-gray-500">Stato: <span class="font-semibold text-green-800">${project.status || 'Non specificato'}</span></span>
-                    <span class="text-gray-400">•</span>
-                    <span class="font-medium text-gray-500">Aggiunto il: ${timestamp}</span>
-                </div>
-            `;
-            card.appendChild(actionButtons);
-            return card;
-        }
-
-        async function deleteProject(docId) {
-            if (confirm("Sei sicuro di voler eliminare questo progetto?")) {
-                const projectRef = doc(db, `artifacts/${appId}/users/${userId}/projects`, docId);
-                try {
-                    await deleteDoc(projectRef);
-                    alert("Progetto eliminato con successo.");
-                } catch (e) {
-                    console.error("Errore nell'eliminazione del progetto: ", e);
-                    alert("Si è verificato un errore durante l'eliminazione.");
-                }
-            }
-        }
-        
-        function openEditModal(docId, project) {
-            const editModal = document.getElementById('edit-modal');
-            document.getElementById('edit-project-id').value = docId;
-            document.getElementById('edit-project-name').value = project.name;
-            document.getElementById('edit-project-status').value = project.status || 'In Corso';
-            document.getElementById('edit-project-description').value = project.description || '';
-            document.getElementById('edit-project-image').value = project.image || '';
-            editModal.style.display = 'flex';
-        }
-
-        async function saveEdit() {
-            const docId = document.getElementById('edit-project-id').value;
-            const newName = document.getElementById('edit-project-name').value;
-            const newStatus = document.getElementById('edit-project-status').value;
-            const newDescription = document.getElementById('edit-project-description').value;
-            const newImage = document.getElementById('edit-project-image').value;
-
-            if (newName.trim() === "") {
-                alert("Il nome del progetto non può essere vuoto.");
-                return;
-            }
-
-            const projectRef = doc(db, `artifacts/${appId}/users/${userId}/projects`, docId);
-            try {
-                await updateDoc(projectRef, {
-                    name: newName,
-                    status: newStatus,
-                    description: newDescription,
-                    image: newImage,
-                    updatedAt: serverTimestamp()
-                });
-                alert("Progetto aggiornato con successo.");
-                document.getElementById('edit-modal').style.display = 'none';
-            } catch (e) {
-                console.error("Errore nell'aggiornamento del progetto: ", e);
-                alert("Si è verificato un errore durante l'aggiornamento.");
-            }
-        }
-
-        function setupFirestoreListener() {
-            if (!isAuthReady || !db) return;
-            const projectsList = document.getElementById('projects-list');
-            projectsList.innerHTML = `<p class="p-4 bg-gray-100 rounded-lg text-gray-600 text-center">Caricamento dei tuoi progetti...</p>`;
-            const projectsCollection = collection(db, `artifacts/${appId}/users/${userId}/projects`);
-            onSnapshot(projectsCollection, (snapshot) => {
-                projectsList.innerHTML = '';
-                snapshot.forEach((doc) => {
-                    const project = doc.data();
-                    projectsList.appendChild(createYourProjectCard(project, doc.id));
-                });
-                if (snapshot.empty) {
-                    projectsList.innerHTML = `<p class="p-4 bg-gray-100 rounded-lg text-gray-600 text-center">Nessun progetto trovato. Aggiungine uno!</p>`;
-                }
-            }, (error) => {
-                console.error("Error listening to projects:", error);
-                projectsList.innerHTML = `<p class="p-4 bg-red-100 rounded-lg text-red-600 text-center">Errore nel caricamento dei progetti.</p>`;
-            });
         }
 
         function createRipple(event) {
@@ -755,11 +705,8 @@
         }
         
         function initMap() {
-            console.log("Inizializzazione mappa..."); // Messaggio di debug
-
             const mapContainer = document.getElementById('map');
             if (!mapContainer) {
-                console.error("Errore: il contenitore della mappa con ID 'map' non è stato trovato!");
                 return;
             }
 
@@ -773,11 +720,12 @@
                 const marker = L.marker(project.coords).addTo(map);
                 marker.bindPopup(`<b>${project.name}</b><br>${project.description}`);
             });
-            console.log("Mappa inizializzata con successo."); // Messaggio di debug
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            initFirebase();
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.classList.add('hidden');
+            
             createCarouselSlides();
             
             const titleText = "Piattaforma di Riattivazione Territoriale";
@@ -798,6 +746,7 @@
             const editModal = document.getElementById('edit-modal');
             const saveEditBtn = document.getElementById('save-edit-btn');
             const editModalCloseBtn = editModal.querySelector('.modal-close');
+            const dashboardSection = document.getElementById('dashboard');
 
             const carouselNextBtn = document.getElementById('carousel-next-btn');
             const carouselPrevBtn = document.getElementById('carousel-prev-btn');
@@ -841,6 +790,8 @@
             });
 
             loginBtn.addEventListener('click', () => {
+                simulatedUserId = generateRandomId();
+                document.getElementById('user-id-display').textContent = simulatedUserId;
                 loginModal.classList.remove('hidden');
                 loginModal.classList.add('flex');
             });
@@ -848,7 +799,9 @@
             closeModalBtn.addEventListener('click', () => {
                 loginModal.classList.add('hidden');
                 loginModal.classList.remove('flex');
+                dashboardSection.classList.remove('hidden');
                 document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
+                renderProjects();
             });
 
             editModalCloseBtn.addEventListener('click', () => {
@@ -857,7 +810,7 @@
 
             saveEditBtn.addEventListener('click', saveEdit);
 
-            addProjectBtn.addEventListener('click', async () => {
+            addProjectBtn.addEventListener('click', () => {
                 const projectName = projectNameInput.value.trim();
                 const projectDescription = projectDescriptionInput.value.trim();
                 const projectStatus = projectStatusInput.value;
@@ -867,25 +820,21 @@
                     alert("Il nome del progetto non può essere vuoto.");
                     return;
                 }
-                if (!db || !userId) {
-                    console.error("Firebase not initialized or user not authenticated.");
-                    return;
-                }
-                try {
-                    const docRef = await addDoc(collection(db, `artifacts/${appId}/users/${userId}/projects`), {
-                        name: projectName,
-                        description: projectDescription,
-                        status: projectStatus,
-                        image: projectImage,
-                        createdAt: serverTimestamp()
-                    });
-                    console.log("Document written with ID: ", docRef.id);
-                    projectNameInput.value = "";
-                    projectDescriptionInput.value = "";
-                    projectImageInput.value = "";
-                } catch (e) {
-                    console.error("Error adding document: ", e);
-                }
+                
+                const newProject = {
+                    name: projectName,
+                    description: projectDescription,
+                    status: projectStatus,
+                    image: projectImage,
+                    createdAt: new Date().toISOString()
+                };
+                simulatedProjects.push(newProject);
+                
+                renderProjects();
+                
+                projectNameInput.value = "";
+                projectDescriptionInput.value = "";
+                projectImageInput.value = "";
             });
 
             allButtons.forEach(button => {
