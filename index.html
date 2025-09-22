@@ -419,7 +419,7 @@
                 Collaborazioni per il Sociale
             </h2>
             <p class="text-gray-600 max-w-4xl mx-auto">
-                bla bla.
+                In questa sezione potrai descrivere le tue collaborazioni con organizzazioni non-profit, associazioni e enti che supportano progetti a impatto sociale.
             </p>
         </div>
     </section>
@@ -429,7 +429,7 @@
                 Policy e Trasparenza
             </h2>
             <p class="text-gray-600 max-w-4xl mx-auto">
-                bla bla bla.
+                Qui potrai inserire i dettagli relativi alla tua privacy policy, ai termini di servizio e a tutte le normative che regolano la piattaforma per garantire massima trasparenza e fiducia.
             </p>
         </div>
     </section>
@@ -721,6 +721,14 @@
                 const marker = L.marker(project.coords).addTo(map);
                 marker.bindPopup(`<b>${project.name}</b><br>${project.description}`);
                 projectCoords.push(project.coords);
+
+                // Aggiungi il listener di click al marker per zoommare
+                marker.on('click', () => {
+                    map.flyTo(project.coords, 13, {
+                        animate: true,
+                        duration: 1.5
+                    });
+                });
             });
 
             if (projectCoords.length > 0) {
