@@ -277,6 +277,44 @@
             border-radius: 1.5rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
         }
+        /* --- STILI AGGIUNTIVI PER LA SEZIONE DIGITAL TWIN --- */
+        #digital-twin-model {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background-image: url('https://i.imgur.com/rN5nO7i.jpeg'); /* Immagine di base per il modello 3D */
+            background-size: cover;
+            background-position: center;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            animation: pulse-border 2s infinite ease-in-out;
+        }
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(46, 139, 87, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(46, 139, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 139, 87, 0); }
+        }
+        .data-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+        .data-overlay.active {
+            opacity: 1;
+        }
+        .data-overlay.soil-quality {
+            background-image: url('https://i.imgur.com/iR37yC0.jpeg'); /* Immagine per la qualità del suolo */
+        }
+        .data-overlay.topography {
+            background-image: url('https://i.imgur.com/i76oY04.jpeg'); /* Immagine per il rilievo topografico */
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-green-50 to-lime-50">
@@ -293,6 +331,7 @@
                 <a href="#about" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Chi Siamo</a>
                 <a href="#how-it-works" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Come Funziona</a>
                 <a href="#find-land" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Trova Terreno</a>
+                <a href="#digital-twin" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Digital Twin</a>
                 <a href="#social-collaborations" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Collaborazioni per il sociale</a>
                 <a href="#policy" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Policy</a>
                 <button id="login-btn" class="btn btn-primary text-sm px-4 py-2">Accedi</button>
@@ -413,13 +452,42 @@
             </div>
         </div>
     </section>
+    
+    <section id="digital-twin" class="section">
+        <div class="container text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8">
+                Digital Twin: Analizza il Terreno
+            </h2>
+            <p class="text-center text-gray-600 max-w-4xl mx-auto mb-8">
+                Esplora il "gemello digitale" di un terreno per analizzare dati cruciali come la qualità del suolo e il rilievo topografico prima di iniziare il tuo progetto.
+            </p>
+            <div class="card p-6 md:p-8 flex flex-col items-center">
+                <div id="digital-twin-model">
+                    <div id="soil-overlay" class="data-overlay soil-quality"></div>
+                    <div id="topography-overlay" class="data-overlay topography"></div>
+                </div>
+                
+                <div class="flex flex-wrap justify-center gap-4 mt-8">
+                    <button data-overlay="soil-quality" class="digital-twin-btn btn btn-outline">Qualità del Suolo</button>
+                    <button data-overlay="topography" class="digital-twin-btn btn btn-outline">Rilievo Topografico</button>
+                    <button data-overlay="none" class="digital-twin-btn btn btn-outline">Rimuovi Dati</button>
+                </div>
+                
+                <div id="data-info" class="mt-8 p-4 bg-lime-50 rounded-lg max-w-2xl text-left hidden">
+                    <h4 class="font-bold text-lg mb-2 text-green-800"></h4>
+                    <p class="text-gray-600"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="social-collaborations" class="section">
         <div class="container text-center">
             <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8">
                 Collaborazioni per il Sociale
             </h2>
             <p class="text-gray-600 max-w-4xl mx-auto">
-                In questa sezione potrai descrivere le tue collaborazioni con organizzazioni non-profit, associazioni e enti che supportano progetti a impatto sociale.
+                bla.
             </p>
         </div>
     </section>
@@ -429,7 +497,7 @@
                 Policy e Trasparenza
             </h2>
             <p class="text-gray-600 max-w-4xl mx-auto">
-                Qui potrai inserire i dettagli relativi alla tua privacy policy, ai termini di servizio e a tutte le normative che regolano la piattaforma per garantire massima trasparenza e fiducia.
+                bla bla.
             </p>
         </div>
     </section>
@@ -513,6 +581,16 @@
         let simulatedProjects = [];
         let simulatedUserId = null;
         let map;
+        const digitalTwinData = {
+            'soil-quality': {
+                title: 'Qualità del Suolo (Dati Fittizi)',
+                description: 'Il livello di fertilità del terreno è indicato dai colori. Il verde scuro indica un suolo ricco di nutrienti, mentre le aree più chiare potrebbero necessitare di rigenerazione. Questi dati simulano un’analisi del suolo basata su campionamenti.'
+            },
+            'topography': {
+                title: 'Rilievo Topografico (Dati Fittizi)',
+                description: 'Questa visualizzazione mostra l’altitudine e la pendenza del terreno. Le aree più scure indicano un’alta pendenza, che potrebbe influenzare le scelte di irrigazione o di tipo di coltura. Simula i dati ottenuti da droni o rilievi satellitari.'
+            }
+        };
 
         function generateRandomId() {
             return 'user-' + Math.random().toString(36).substring(2, 15);
@@ -794,6 +872,34 @@
             const saveEditBtn = document.getElementById('save-edit-btn');
             const editModalCloseBtn = editModal.querySelector('.modal-close');
             const dashboardSection = document.getElementById('dashboard');
+            
+            // Logica per la nuova sezione Digital Twin
+            const digitalTwinButtons = document.querySelectorAll('.digital-twin-btn');
+            const dataInfoBox = document.getElementById('data-info');
+            const dataInfoTitle = dataInfoBox.querySelector('h4');
+            const dataInfoDescription = dataInfoBox.querySelector('p');
+            const overlays = document.querySelectorAll('.data-overlay');
+
+            digitalTwinButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const overlayType = btn.dataset.overlay;
+
+                    // Rimuovi la classe 'active' da tutti gli overlay
+                    overlays.forEach(overlay => overlay.classList.remove('active'));
+
+                    if (overlayType !== 'none') {
+                        // Attiva l'overlay corretto
+                        document.getElementById(`${overlayType.replace('-', '')}-overlay`).classList.add('active');
+                        // Aggiorna il testo informativo
+                        dataInfoTitle.textContent = digitalTwinData[overlayType].title;
+                        dataInfoDescription.textContent = digitalTwinData[overlayType].description;
+                        dataInfoBox.classList.remove('hidden');
+                    } else {
+                        // Nascondi il pannello informativo
+                        dataInfoBox.classList.add('hidden');
+                    }
+                });
+            });
 
             const carouselNextBtn = document.getElementById('carousel-next-btn');
             const carouselPrevBtn = document.getElementById('carousel-prev-btn');
