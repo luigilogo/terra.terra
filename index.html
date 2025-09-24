@@ -278,6 +278,35 @@
             border-radius: 1.5rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
         }
+        /* Stili per la sezione 3D/Simulazione */
+        #interactive-3d-model {
+            width: 100%;
+            height: 500px;
+            background-color: #f0fdf4;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            margin-top: 2rem;
+        }
+        .simulation-result {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+        }
+        .simulation-result.success {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #15803d;
+        }
+        .simulation-result.warning {
+            background-color: #fffbeb;
+            color: #b45309;
+            border: 1px solid #b45309;
+        }
+        .simulation-result.failure {
+            background-color: #fee2e2;
+            color: #be123c;
+            border: 1px solid #be123c;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-green-50 to-lime-50">
@@ -294,6 +323,7 @@
                 <a href="#about" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Chi Siamo</a>
                 <a href="#how-it-works" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Come Funziona</a>
                 <a href="#find-land" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Trova Terreno</a>
+                <a href="#interactive-tools" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Mappa 3D & Simulazione</a>
                 <a href="#social-collaborations" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Collaborazioni per il sociale</a>
                 <a href="#policy" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Policy</a>
                 <button id="login-btn" class="btn btn-primary text-sm px-4 py-2">Accedi</button>
@@ -415,13 +445,66 @@
         </div>
     </section>
     
+    <section id="interactive-tools" class="section">
+        <div class="container text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8">
+                Esplora in 3D e Simula il Futuro
+            </h2>
+            <p class="text-center text-gray-600 max-w-4xl mx-auto mb-8">
+                Interagisci con modelli 3D dei terreni e utilizza il nostro simulatore per prevedere la resa delle tue colture.
+            </p>
+            <div class="card p-6 md:p-8">
+                <h3 class="text-xl font-semibold text-green-800 mb-4 text-left">Mappa 3D Interattiva</h3>
+                <div id="interactive-3d-model"></div>
+                
+                <div class="flex flex-wrap justify-center gap-4 mt-4">
+                    <button id="show-soil-data-btn" class="btn btn-outline">Mostra Dati Suolo</button>
+                    <button id="show-irrigation-data-btn" class="btn btn-outline">Mostra Dati Irrigazione</button>
+                    <button id="reset-3d-model-btn" class="btn btn-outline">Reset</button>
+                </div>
+                
+                <hr class="my-8 border-gray-200">
+                
+                <h3 class="text-xl font-semibold text-green-800 mb-4 text-left">Simulatore di Coltivazione</h3>
+                <p class="text-gray-600 text-left mb-4">
+                    Seleziona le condizioni per prevedere l'esito del tuo raccolto.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <select id="crop-select" class="w-full p-3 rounded-lg border-2 border-gray-300 input-field">
+                        <option value="wheat">Grano</option>
+                        <option value="tomatoes">Pomodori</option>
+                        <option value="olives">Olivi</option>
+                        <option value="vegetables">Verdure a foglia</option>
+                    </select>
+                    <select id="weather-select" class="w-full p-3 rounded-lg border-2 border-gray-300 input-field">
+                        <option value="optimal">Condizioni Ottimali</option>
+                        <option value="drought">Periodo di Siccità</option>
+                        <option value="rainy">Periodo Piovoso</option>
+                    </select>
+                    <select id="soil-select" class="w-full p-3 rounded-lg border-2 border-gray-300 input-field">
+                        <option value="rich">Terreno Ricco</option>
+                        <option value="average">Terreno Medio</option>
+                        <option value="poor">Terreno Povero</option>
+                    </select>
+                </div>
+                <button id="simulate-btn" class="btn btn-primary w-full">Simula il Raccolto</button>
+                
+                <div id="simulation-output" class="hidden mt-4">
+                    <h4 class="font-bold text-lg mb-2 text-green-800 text-left">Risultato della Simulazione:</h4>
+                    <div id="result-message" class="p-4 rounded-lg"></div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
     <section id="social-collaborations" class="section">
         <div class="container text-center">
             <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8">
                 Collaborazioni per il Sociale
             </h2>
             <p class="text-gray-600 max-w-4xl mx-auto">
-                bla bla bla
+                In questa sezione potrai descrivere le tue collaborazioni con organizzazioni non-profit, associazioni e enti che supportano progetti a impatto sociale.
             </p>
         </div>
     </section>
@@ -431,7 +514,7 @@
                 Policy e Trasparenza
             </h2>
             <p class="text-gray-600 max-w-4xl mx-auto">
-                bla bla bla
+                Qui potrai inserire i dettagli relativi alla tua privacy policy, ai termini di servizio e a tutte le normative che regolano la piattaforma per garantire massima trasparenza e fiducia.
             </p>
         </div>
     </section>
@@ -511,10 +594,113 @@
         </svg>
     </button>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         let simulatedProjects = [];
         let simulatedUserId = null;
         let map;
+
+        // Funzioni per la nuova sezione 3D/Simulatore
+        function init3DModel() {
+            const container = document.getElementById('interactive-3d-model');
+            if (!container) return;
+
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0fdf4);
+            const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            const geometry = new THREE.BoxGeometry(3, 0.5, 3);
+            const material = new THREE.MeshStandardMaterial({ color: 0x8b5e3e });
+            const ground = new THREE.Mesh(geometry, material);
+            scene.add(ground);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
+            camera.position.z = 5;
+            camera.position.y = 3;
+            camera.lookAt(ground.position);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                ground.rotation.y += 0.005;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            // Aggiungi un'immagine 2D come "dati" sovrapposti
+            const textureLoader = new THREE.TextureLoader();
+            let soilTexture = null;
+            let irrigationTexture = null;
+
+            textureLoader.load('https://i.imgur.com/l7xP6B3.png', (texture) => {
+                soilTexture = texture;
+            });
+            textureLoader.load('https://i.imgur.com/XqUqS8X.png', (texture) => {
+                irrigationTexture = texture;
+            });
+
+            document.getElementById('show-soil-data-btn').addEventListener('click', () => {
+                if (soilTexture) {
+                    ground.material.map = soilTexture;
+                    ground.material.needsUpdate = true;
+                    alert('Dati di qualità del suolo caricati sul modello 3D.');
+                }
+            });
+
+            document.getElementById('show-irrigation-data-btn').addEventListener('click', () => {
+                if (irrigationTexture) {
+                    ground.material.map = irrigationTexture;
+                    ground.material.needsUpdate = true;
+                    alert('Dati di irrigazione caricati sul modello 3D.');
+                }
+            });
+
+            document.getElementById('reset-3d-model-btn').addEventListener('click', () => {
+                ground.material.map = null;
+                ground.material.color.set(0x8b5e3e);
+                ground.material.needsUpdate = true;
+                alert('Modello 3D resettato.');
+            });
+        }
+        
+        function simulateCultivation() {
+            const crop = document.getElementById('crop-select').value;
+            const weather = document.getElementById('weather-select').value;
+            const soil = document.getElementById('soil-select').value;
+            const outputDiv = document.getElementById('simulation-output');
+            const messageDiv = document.getElementById('result-message');
+            
+            outputDiv.classList.remove('hidden');
+            messageDiv.className = ''; // Rimuovi tutte le classi di stato
+
+            let resultText = '';
+            let resultClass = '';
+
+            // Semplice logica di simulazione
+            if (weather === 'optimal' && soil === 'rich') {
+                resultText = `Grande successo! Con un terreno ricco e condizioni ottimali, il raccolto di ${crop} sarà abbondante. Previsione: 95% di resa.`;
+                resultClass = 'success';
+            } else if (weather === 'drought' && soil === 'poor') {
+                resultText = `Rischio elevato. Le condizioni di siccità e un terreno povero renderanno molto difficile il raccolto di ${crop}. Previsione: 15% di resa.`;
+                resultClass = 'failure';
+            } else if (weather === 'rainy' && soil === 'rich') {
+                resultText = `Successo potenziale. Un terreno ricco aiuta, ma l'eccesso di pioggia potrebbe danneggiare il raccolto. Previsione: 70% di resa.`;
+                resultClass = 'warning';
+            } else {
+                resultText = `Previsione media. Le condizioni attuali indicano un raccolto nella media. Previsione: 50% di resa.`;
+                resultClass = 'warning';
+            }
+
+            messageDiv.textContent = resultText;
+            messageDiv.classList.add('simulation-result', resultClass);
+        }
 
         function generateRandomId() {
             return 'user-' + Math.random().toString(36).substring(2, 15);
@@ -796,6 +982,11 @@
             const saveEditBtn = document.getElementById('save-edit-btn');
             const editModalCloseBtn = editModal.querySelector('.modal-close');
             const dashboardSection = document.getElementById('dashboard');
+
+            const simulateBtn = document.getElementById('simulate-btn');
+            if (simulateBtn) {
+                simulateBtn.addEventListener('click', simulateCultivation);
+            }
             
             const carouselNextBtn = document.getElementById('carousel-next-btn');
             const carouselPrevBtn = document.getElementById('carousel-prev-btn');
@@ -891,6 +1082,7 @@
             });
             
             initMap();
+            init3DModel();
         });
     </script>
 </body>
