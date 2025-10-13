@@ -1,904 +1,643 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piattaforma terra.terra</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="https://via.placeholder.com/32x32.png?text=🌿" type="image/x-icon">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f6fdf9;
-            color: #1a5e3a;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
-        .section {
-            padding: 6rem 0;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-        .section.fade-in {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .card {
-            background-color: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
-            padding: 2.5rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        .btn {
-            padding: 0.75rem 2rem;
-            border-radius: 9999px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-primary {
-            background-color: #2e8b57;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #256b44;
-            box-shadow: 0 6px 8px -2px rgba(0, 0, 0, 0.15);
-        }
-        .btn-outline {
-            background-color: transparent;
-            color: #2e8b57;
-            border: 2px solid #2e8b57;
-        }
-        .btn-outline:hover {
-            background-color: #2e8b57;
-            color: white;
-        }
-        .pill {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        .pill.e { background-color: #d1fae5; color: #065f46; }
-        .pill.s { background-color: #35363b; color: #ffffff; }
-        .pill.g { background-color: #542e1b; color: #ffffff; }
-        .logo {
-            display: inline-block;
-            width: 2.5rem;
-            height: 2.5rem;
-            background-color: #2e8b57;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-            margin-right: 0.5rem;
-        }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .tab-button.active {
-            background-color: #2e8b57;
-            color: white;
-            border-radius: 1rem;
-        }
-        .tab-button {
-            transition: all 0.3s ease;
-            padding: 0.75rem 1.5rem;
-            border-radius: 1rem;
-        }
-        .input-field {
-            transition: all 0.3s ease;
-            border-radius: 0.75rem;
-            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-        }
-        .input-field:focus {
-            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.3);
-            border-color: #2e8b57;
-            outline: none;
-        }
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: #2e8b57;
-            animation: spin 1s ease infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 50;
-        }
-        .hero-bg {
-            background-image: url('https://greenad.it/images/2024/02/Agricoltura-biologica-Italia-1-1.webp');
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            height: 70vh;
-            overflow: hidden;
-            animation: hero-bg-pan-zoom 20s infinite alternate ease-in-out;
-        }
-        .hero-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(246, 253, 249, 1) 0%, rgba(246, 253, 249, 0.2) 100%);
-            z-index: 1;
-        }
-        @keyframes hero-bg-pan-zoom {
-            0% {
-                background-position: 0% 0%;
-                background-size: 110%;
-            }
-            100% {
-                background-position: 100% 100%;
-                background-size: 100%;
-            }
-        }
-        .hero-content {
-            position: relative;
-            z-index: 10;
-        }
-        #back-to-top-btn {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background-color: #2e8b57;
-            color: white;
-            padding: 1rem;
-            border-radius: 9999px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            z-index: 40;
-            cursor: pointer;
-        }
-        #back-to-top-btn.is-visible {
-            opacity: 1;
-            visibility: visible;
-        }
-        .ripple-effect {
-            position: absolute;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.4);
-            animation: ripple 0.6s linear;
-            transform: scale(0);
-        }
-        @keyframes ripple {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-        .carousel-container {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-        }
-        .carousel-track {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-        }
-        .carousel-slide {
-            min-width: 100%;
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 1.5rem;
-            padding: 0 1rem;
-        }
-        .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 1rem;
-        }
-        .carousel-btn {
-            background-color: rgba(46, 139, 87, 0.8);
-            color: white;
-            border: none;
-            padding: 0.5rem;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 20;
-            transition: background-color 0.3s ease;
-        }
-        .carousel-btn:hover {
-            background-color: rgba(46, 139, 87, 1);
-        }
-        @media (max-width: 768px) {
-            .carousel-slide {
-                grid-template-columns: repeat(1, minmax(0, 1fr));
-            }
-        }
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 50;
-        }
-        .modal-content {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-        }
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        #map {
-            /* DEVE avere un'altezza definita per essere visibile */
-            height: 400px;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piattaforma terra.terra</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="icon" href="https://via.placeholder.com/32x32.png?text= 🌿 " type="image/x-icon">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+body {
+font-family: 'Inter', sans-serif;
+background-color: #f6fdf9;
+color: #1a5e3a;
+overflow-x: hidden;
+scroll-behavior: smooth;
+}
+.container {
+max-width: 1280px;
+margin: 0 auto;
+padding: 1.5rem;
+}
+.section {
+padding: 6rem 0;
+opacity: 0;
+transform: translateY(20px);
+transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.section.fade-in {
+opacity: 1;
+transform: translateY(0);
+}
+.card {
+background-color: white;
+border-radius: 1.5rem;
+box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+padding: 2.5rem;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+transform: translateY(-5px) scale(1.02);
+box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+.btn {
+padding: 0.75rem 2rem;
+border-radius: 9999px;
+font-weight: 600;
+transition: all 0.3s ease;
+box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+position: relative;
+overflow: hidden;
+}
+.btn-primary {
+background-color: #2e8b57;
+color: white;
+}
+.btn-primary:hover {
+background-color: #256b44;
+box-shadow: 0 6px 8px -2px rgba(0, 0, 0, 0.15);
+}
+.btn-outline {
+background-color: transparent;
+color: #2e8b57;
+border: 2px solid #2e8b57;
+}
+.btn-outline:hover {
+background-color: #2e8b57;
+color: white;
+}
+.pill {
+display: inline-block;
+padding: 0.25rem 0.75rem;
+border-radius: 9999px;
+font-size: 0.875rem;
+font-weight: 500;
+}
+.pill.e { background-color: #d1fae5; color: #065f46; }
+.pill.s { background-color: #35363b; color: #ffffff; }
+.pill.g { background-color: #542e1b; color: #ffffff; }
+.logo {
+display: inline-block;
+width: 2.5rem;
+height: 2.5rem;
+background-color: #2e8b57;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.5rem;
+color: white;
+margin-right: 0.5rem;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.tab-button.active {
+background-color: #2e8b57;
+color: white;
+border-radius: 1rem;
+}
+.tab-button {
+transition: all 0.3s ease;
+padding: 0.75rem 1.5rem;
+border-radius: 1rem;
+}
+.input-field {
+transition: all 0.3s ease;
+border-radius: 0.75rem;
+box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+}
+.input-field:focus {
+box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.3);
+border-color: #2e8b57;
+outline: none;
+}
+.spinner {
+border: 4px solid rgba(0, 0, 0, 0.1);
+width: 36px;
+height: 36px;
+border-radius: 50%;
+border-left-color: #2e8b57;
+animation: spin 1s ease infinite;
+}
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+.loading-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(255, 255, 255, 0.8);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 50;
+}
+.hero-bg {
+background-image: url('https://greenad.it/images/2024/02/Agricoltura-biologica-Italia-1-1.webp');
+background-size: cover;
+background-position: center;
+position: relative;
+height: 70vh;
+overflow: hidden;
+animation: hero-bg-pan-zoom 20s infinite alternate ease-in-out;
+}
+.hero-bg::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: linear-gradient(to top, rgba(246, 253, 249, 1) 0%, rgba(246, 253, 249, 0.2) 100%);
+z-index: 1;
+}
+@keyframes hero-bg-pan-zoom {
+0% {
+background-position: 0% 0%;
+background-size: 110%;
+}
+100% {
+background-position: 100% 100%;
+background-size: 100%;
+}
+}
+.hero-content {
+position: relative;
+z-index: 10;
+}
+#back-to-top-btn {
+position: fixed;
+bottom: 2rem;
+right: 2rem;
+background-color: #2e8b57;
+color: white;
+padding: 1rem;
+border-radius: 9999px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+opacity: 0;
+visibility: hidden;
+transition: opacity 0.3s ease, visibility 0.3s ease;
+z-index: 40;
+cursor: pointer;
+}
+#back-to-top-btn.is-visible {
+opacity: 1;
+visibility: visible;
+}
+.ripple-effect {
+position: absolute;
+border-radius: 50%;
+background-color: rgba(255, 255, 255, 0.4);
+animation: ripple 0.6s linear;
+transform: scale(0);
+}
+@keyframes ripple {
+to {
+transform: scale(4);
+opacity: 0;
+}
+}
+.carousel-container {
+position: relative;
+width: 100%;
+overflow: hidden;
+}
+.carousel-track {
+display: flex;
+transition: transform 0.5s ease-in-out;
+}
+.carousel-slide {
+min-width: 100%;
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 1.5rem;
+padding: 0 1rem;
+}
+.carousel-nav {
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+width: 100%;
+display: flex;
+justify-content: space-between;
+padding: 0 1rem;
+}
+.carousel-btn {
+background-color: rgba(46, 139, 87, 0.8);
+color: white;
+border: none;
+padding: 0.5rem;
+border-radius: 50%;
+cursor: pointer;
+z-index: 20;
+transition: background-color 0.3s ease;
+}
+.carousel-btn:hover {
+background-color: rgba(46, 139, 87, 1);
+}
+@media (max-width: 768px) {
+.carousel-slide {
+grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+}
+</style>
 </head>
 <body class="bg-gradient-to-br from-green-50 to-lime-50">
-    <div id="loading-overlay" class="loading-overlay hidden">
-        <div class="spinner"></div>
-    </div>
-    <nav class="fixed top-0 w-full z-20 bg-white bg-opacity-80 backdrop-blur-md shadow-md">
-        <div class="container flex justify-between items-center py-4">
-            <a href="#" class="flex items-center text-2xl font-bold text-emerald-800">
-                <span class="logo">🌿</span>
-             terra.terra
-            </a>
-            <div class="flex items-center space-x-4">
-                <a href="#about" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Chi Siamo</a>
-                <a href="#how-it-works" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Come Funziona</a>
-                <a href="#find-land" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Trova Terreno</a>
-                <a href="#social-collaborations" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Collaborazioni per il sociale</a>
-                <a href="#policy" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Servizi</a>
-                <button id="login-btn" class="btn btn-primary text-sm px-4 py-2">Accedi</button>
-            </div>
-        </div>
-    </nav>
-    <div class="hero-bg"></div>
-    <section id="our-mission" class="section -mt-48 relative z-20">
-        <div class="container">
-            <div class="card p-8 md:p-12 text-center hero-content">
-                <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-emerald-800 leading-tight mb-4">
-                    <span id="animated-title"></span>
-                </h1>
-                <p class="text-xl sm:text-2xl text-emerald-700 max-w-3xl mx-auto mb-8">
-                    Per il recupero, la tutela e la valorizzazione dei terreni agricoli e rurali.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="#about" class="btn btn-primary animate-bounce-custom">Scopri di più</a>
-                    <a href="#find-land" class="btn btn-outline">Trova un Terreno</a>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="about" class="section">
-        <div class="container">
-            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-6 text-center">
-                Chi Siamo: Un Ecosistema per la Sostenibilità
-            </h2>
-            <p class="text-center text-gray-600 max-w-4xl mx-auto mb-12">
-                Siamo un team di esperti in agricoltura, tecnologia e sviluppo sostenibile uniti dalla passione per la nostra terra.
-                La nostra missione è connettere le persone con i terreni agricoli abbandonati, trasformandoli in progetti produttivi e sostenibili che rispettano l'ambiente e rafforzano le comunità locali.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="card flex flex-col items-center text-center">
-                    <div class="pill e mb-4">Ambientale (E)</div>
-                    <h3 class="text-xl font-semibold mb-2 text-green-800">Rigenerazione e Agricoltura sostenibile</h3>
-                    <p class="text-gray-600">
-                        La piattaforma facilita la rigenerazione di suoli degradati, promuove la biodiversità e supporta pratiche di agricoltura sostenibile.
-                    </p>
-                </div>
-                <div class="card flex flex-col items-center text-center">
-                    <div class="pill s mb-4">Sociale (S)</div>
-                    <h3 class="text-xl font-semibold mb-2 text-gray-800">Comunità, Inclusione e Benessere</h3>
-                    <p class="text-gray-600">
-                        Risponde alla domanda di ritorno all'agricoltura, offrendo opportunità di inclusione lavorativa per categorie svantaggiate e rafforzando il tessuto relazionale locale.
-                    </p>
-                </div>
-                <div class="card flex flex-col items-center text-center">
-                    <div class="pill g mb-4">Governance (G)</div>
-                    <h3 class="text-xl font-semibold mb-2 text-brown-800">Trasparenza e Affidabilità</h3>
-                    <p class="text-gray-600">
-                        Proponiamo quadri contrattuali chiari, mitigando i rischi e costruendo un solido rapporto di fiducia.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="how-it-works" class="section bg-lime-50">
-        <div class="container text-center">
-            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-12">
-                Come Funziona la Piattaforma
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="card p-6">
-                    <div class="text-4xl mb-4 text-emerald-600">1.</div>
-                    <h3 class="text-xl font-semibold mb-2 text-green-800">Esplora i Terreni</h3>
-                    <p class="text-gray-600">Cerca tra i terreni disponibili e scopri quelli che si adattano al tuo progetto agricolo.</p>
-                </div>
-                <div class="card p-6">
-                    <div class="text-4xl mb-4 text-emerald-600">2.</div>
-                    <h3 class="text-xl font-semibold mb-2 text-gray-800">Proponi il Tuo Progetto</h3>
-                    <p class="text-gray-600">Presenta la tua idea di progetto. La nostra comunità e i proprietari valuteranno la tua proposta.</p>
-                </div>
-                <div class="card p-6">
-                    <div class="text-4xl mb-4 text-emerald-600">3.</div>
-                    <h3 class="text-xl font-semibold mb-2 text-brown-800">Inizia a Coltivare</h3>
-                    <p class="text-gray-600">Con il supporto della nostra tecnologia e della nostra comunità, inizia a lavorare la terra in modo sostenibile.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section id="find-land" class="section bg-green-50">
-        <div class="container">
-            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8 text-center">
-                Trova il Terreno Perfetto per il Tuo Progetto
-            </h2>
-            <div class="card p-6 md:p-8">
-                <p class="text-center text-gray-600 mb-6">Usa il nostro motore di ricerca avanzato per trovare terreni disponibili.</p>
-                <div class="flex flex-col sm:flex-row gap-4 mb-8">
-                    <input type="text" placeholder="Città o CAP" class="flex-1 p-3 rounded-lg border-2 border-gray-300 input-field">
-                    <select class="p-3 rounded-lg border-2 border-gray-300 input-field">
-                        <option>Tipo di Coltivazione</option>
-                        <option>Colture erbacee</option>
-                        <option>Colture legnose</option>
-                        <option>Colture speciali</option>
-                        <option>Altro</option>
-                    </select>
-                    <button class="btn btn-primary">Cerca Terreno</button>
-                </div>
-                <div id="search-results-section">
-                    <h3 class="text-xl font-semibold text-emerald-800 mb-4">Risultati di esempio</h3>
-                    <div class="carousel-container">
-                        <div id="carousel-track" class="carousel-track">
-                        </div>
-                        <div class="carousel-nav">
-                            <button id="carousel-prev-btn" class="carousel-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                            </button>
-                            <button id="carousel-next-btn" class="carousel-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-8">
-                    <h3 class="text-xl font-semibold text-emerald-800 mb-4">Visualizza sulla Mappa</h3>
-                    <div id="map"></div>
-                </div>
-            </div>
-        </div>
-    </section>
+<div id="loading-overlay" class="loading-overlay hidden">
+<div class="spinner"></div>
+</div>
+<nav class="fixed top-0 w-full z-20 bg-white bg-opacity-80 backdrop-blur-md shadow-md">
+<div class="container flex justify-between items-center py-4">
+<a href="#" class="flex items-center text-2xl font-bold text-emerald-800">
+<span class="logo"> 🌿 </span>
+terra.terra
+</a>
+<div class="flex items-center space-x-4">
+<a href="#about" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Chi Siamo</a>
+<a href="#how-it-works" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Come Funziona</a>
+<a href="#find-land" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Trova Terreno</a>
+<a href="#social-collaborations" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Collaborazioni per il sociale</a>
+<a href="#policy" class="text-gray-600 hover:text-emerald-700 font-medium transition-colors duration-300 hidden md:block">Servizi</a>
+</div>
+</div>
+</nav>
+<div class="hero-bg"></div>
+<section id="our-mission" class="section -mt-48 relative z-20">
+<div class="container">
+<div class="card p-8 md:p-12 text-center hero-content">
+<h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-emerald-800 leading-tight mb-4">
+<span id="animated-title"></span>
+</h1>
+<p class="text-xl sm:text-2xl text-emerald-700 max-w-3xl mx-auto mb-8">
+Per il recupero, la tutela e la valorizzazione dei terreni agricoli e rurali.
+</p>
+<div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+<a href="#about" class="btn btn-primary animate-bounce-custom">Scopri di più</a>
+<a href="#find-land" class="btn btn-outline">Trova un Terreno</a>
+</div>
+</div>
+</div>
+</section>
+<section id="about" class="section">
+<div class="container">
+<h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-6 text-center">
+Chi Siamo: Un Ecosistema per la Sostenibilità
+</h2>
+<p class="text-center text-gray-600 max-w-4xl mx-auto mb-12">
+Siamo un team di esperti in agricoltura, tecnologia e sviluppo sostenibile uniti dalla passione per la nostra terra.
+La nostra missione è connettere le persone con i terreni agricoli abbandonati, trasformandoli in progetti produttivi e sostenibili che rispettano l'ambiente e rafforzano le comunità locali.
+</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="card flex flex-col items-center text-center">
+<div class="pill e mb-4">Ambientale (E)</div>
+<h3 class="text-xl font-semibold mb-2 text-green-800">Rigenerazione e Agricoltura sostenibile</h3>
+<p class="text-gray-600">
+La piattaforma facilita la rigenerazione di suoli degradati, promuove la biodiversità e supporta pratiche di agricoltura sostenibile.
+</p>
+</div>
+<div class="card flex flex-col items-center text-center">
+<div class="pill s mb-4">Sociale (S)</div>
+<h3 class="text-xl font-semibold mb-2 text-gray-800">Comunità, Inclusione e Benessere</h3>
+<p class="text-gray-600">
+Risponde alla domanda di ritorno all'agricoltura, offrendo opportunità di inclusione lavorativa per categorie svantaggiate e rafforzando il tessuto relazionale locale.
+</p>
+</div>
+<div class="card flex flex-col items-center text-center">
+<div class="pill g mb-4">Governance (G)</div>
+<h3 class="text-xl font-semibold mb-2 text-brown-800">Trasparenza e Affidabilità</h3>
+<p class="text-gray-600">
+Proponiamo quadri contrattuali chiari, mitigando i rischi e costruendo un solido rapporto di fiducia.
+</p>
+</div>
+</div>
+</div>
+</section>
+<section id="how-it-works" class="section bg-lime-50">
+<div class="container text-center">
+<h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-12">
+Come Funziona la Piattaforma
+</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="card p-6">
+<div class="text-4xl mb-4 text-emerald-600">1.</div>
+<h3 class="text-xl font-semibold mb-2 text-green-800">Esplora i Terreni</h3>
+<p class="text-gray-600">Cerca tra i terreni disponibili e scopri quelli che si adattano al tuo progetto agricolo.</p>
+</div>
+<div class="card p-6">
+<div class="text-4xl mb-4 text-emerald-600">2.</div>
+<h3 class="text-xl font-semibold mb-2 text-gray-800">Proponi il Tuo Progetto</h3>
+<p class="text-gray-600">Presenta la tua idea di progetto. La nostra comunità e i proprietari valuteranno la tua proposta.</p>
+</div>
+<div class="card p-6">
+<div class="text-4xl mb-4 text-emerald-600">3.</div>
+<h3 class="text-xl font-semibold mb-2 text-brown-800">Inizia a Coltivare</h3>
+<p class="text-gray-600">Con il supporto della nostra tecnologia e della nostra comunità, inizia a lavorare la terra in modo sostenibile.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="find-land" class="section bg-green-50">
+<div class="container">
+<h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8 text-center">
+Trova il Terreno Perfetto per il Tuo Progetto
+</h2>
+<div class="card p-6 md:p-8">
+<p class="text-center text-gray-600 mb-6">Usa il nostro motore di ricerca avanzato per trovare terreni disponibili.</p>
+<div class="flex flex-col sm:flex-row gap-4 mb-8">
+<input type="text" placeholder="Città o CAP" class="flex-1 p-3 rounded-lg border-2 border-gray-300 input-field">
+<select class="p-3 rounded-lg border-2 border-gray-300 input-field">
+<option>Tipo di Coltivazione</option>
+<option>Colture erbacee</option>
+<option>Colture legnose</option>
+<option>Colture speciali</option>
+<option>Altro</option>
+</select>
+<button class="btn btn-primary">Cerca Terreno</button>
+</div>
+<div id="search-results-section">
+<h3 class="text-xl font-semibold text-emerald-800 mb-4">Terreni Disponibili</h3>
+<div class="carousel-container">
+<div id="carousel-track" class="carousel-track">
+</div>
+<div class="carousel-nav">
+<button id="carousel-prev-btn" class="carousel-btn">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+</button>
+<button id="carousel-next-btn" class="carousel-btn">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="social-collaborations" class="section">
+<div class="container">
+<h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8 text-center">
+Collaborazioni per il Sociale
+</h2>
+<p class="text-gray-600 max-w-4xl mx-auto text-center mb-12">
+Uno dei nostri obiettivi è quello di destinare parte del nostro valore aggiunto creato verso realtà locali del Terzo Settore.
+Collaboriamo attivamente con enti no-profit, fondazioni e istituti di ricerca per massimizzare l'impatto sociale e ambientale dei nostri progetti.
+</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="card p-6 text-left">
+<img src="https://images.unsplash.com/photo-1549419058-005663738e4a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Piantagione di alberi" class="rounded-lg mb-4 w-full h-40 object-cover">
+<h3 class="text-xl font-semibold text-green-800 mb-2">Fondazione Verde Italia</h3>
+<p class="text-gray-600 text-sm">
+Supportiamo progetti di **riforestazione urbana e rurale** in collaborazione con la Fondazione per un futuro più verde e la tutela della biodiversità.
+</p>
+</div>
+<div class="card p-6 text-left">
+<img src="https://images.unsplash.com/photo-1540197779951-dc7843e9b119?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Gruppo di persone al lavoro" class="rounded-lg mb-4 w-full h-40 object-cover">
+<h3 class="text-xl font-semibold text-gray-800 mb-2">Associazione Insieme</h3>
+<p class="text-gray-600 text-sm">
+Iniziative di **inclusione lavorativa** per categorie svantaggiate nel settore agricolo, offrendo percorsi di formazione e occupazione.
+</p>
+</div>
+<div class="card p-6 text-left">
+<img src="https://images.unsplash.com/photo-1550484725-7b752427a14e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Ricerca sul campo" class="rounded-lg mb-4 w-full h-40 object-cover">
+<h3 class="text-xl font-semibold text-brown-800 mb-2">Università Agraria Sud</h3>
+<p class="text-gray-600 text-sm">
+Partnership per la **ricerca scientifica** su tecniche di agricoltura rigenerativa, analisi del suolo e miglioramento della biodiversità.
+</p>
+</div>
+</div>
+</div>
+</section>
+<section id="policy" class="section bg-lime-50">
+<div class="container text-center">
+<h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8">
+Servizi
+</h2>
+<p class="text-gray-600 max-w-4xl mx-auto">
+Oltre al nostro sistema di matching, offriamo servizi di consulenza calmierati che aiutano i nostri soci a rimanere sempre aggiornati sulle opportunità economiche presenti sul nostro territorio.
+<br>- Assistenza burocratica <br>- Informativa sull'incentivazione locale <br>- Intermediazione per la ricerca di servizi migliorativi <br>- Collaborazioni con il mondo accademico agronomo
+</p>
+</div>
+</section>
+<footer class="bg-gray-800 text-gray-200 py-8">
+<div class="container text-center">
+<p class="text-lg font-bold mb-2">terra.terra - Piattaforma per il recupero, la tutela e la valorizzazione dei terreni agricoli e rurali</p>
+<p>&copy; 2025. Tutti i diritti riservati.</p>
+</div>
+</footer>
+<button id="back-to-top-btn" aria-label="Torna su">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+</svg>
+</button>
+<script>
+// Array con i dati dei progetti, aggiornato con il nuovo progetto del passo precedente
+const sampleProjects = [
+    {
+        name: "Orto urbano e Giardino aromatico",
+        description: "“Per motivi di trasferimento, cerco qualcuno che voglia dare continuità alla mia piccola coltivazione urbana. L'orto è già avviato, con piante aromatiche e qualche albero di frutto. Mi piacere che restasse un luogo vivo e curato”",
+        tags: [{ label: "Sociale", type: "s" }, { label: "Ambientale", type: "e" }],
+        image: "https://i.postimg.cc/9XqqG82g/rende.jpg",
+        location: "Rende (CS), Calabria",
+        size: "500 mq",
+        cropType: "Colture miste (orticole)",
+        waterAvailability: "Sì, con pozzo",
+        author: "Nome X" 
+    },
+    {
+        name: "Orto Urbano Collettivo",
+        description: "Un progetto di agricoltura sociale che trasforma un'area urbana abbandonata in un orto per la comunità.",
+        tags: [{ label: "Sociale", type: "s" }, { label: "Ambientale", type: "e" }],
+        image: "https://www.infobuildenergia.it/wp-content/uploads/2019/04/esempio-orto-urbano.jpg",
+        location: "Rende (CS), Calabria",
+        size: "2 ettari",
+        cropType: "Colture miste (orticole)",
+        waterAvailability: "Sì",
+        author: "Proprietario Anonimo"
+    },
+    {
+        name: "Vigneto Sostenibile",
+        description: "Progetto che utilizza metodi di agricoltura biologica e di precisione per la coltivazione di uve, minimizzando l'impatto ambientale.",
+        tags: [{ label: "Ambientale", type: "e" }, { label: "Governance", type: "g" }],
+        image: "https://static.tecnichenuove.it/vigneviniequalita/2023/06/bella-vista-di-un-vigneto-immerso-nel-verde-delle-colline-al-tramonto.jpg",
+        location: "Toscana",
+        size: "5 ettari",
+        cropType: "Vite (Colture legnose)",
+        waterAvailability: "No",
+        author: "Proprietario Anonimo"
+    },
+    {
+        name: "Bosco Urbano",
+        description: "Un'iniziativa di riforestazione che crea un polmone verde nel cuore della città per migliorare la qualità dell'aria e della vita.",
+        tags: [{ label: "Ambientale", type: "e" }, { label: "Sociale", type: "s" }],
+        image: "https://www.viaggiareinbrianza.it/wp-content/uploads/2021/05/lissone-bosco-urbano.jpg",
+        location: "Milano",
+        size: "1 ettaro",
+        cropType: "Bosco (Colture legnose)",
+        waterAvailability: "Sì",
+        author: "Proprietario Anonimo"
+    },
+    {
+        name: "Fattoria Didattica",
+        description: "Una fattoria che offre percorsi educativi per le scuole e le famiglie, promuovendo la conoscenza del ciclo agricolo e della biodiversità.",
+        tags: [{ label: "Sociale", type: "s" }, { label: "Ambientale", type: "e" }],
+        image: "https://www.comune.milano.it/documents/20126/66385317/368817346_662369689258273_4654522857021703666_n.jpg/2d698e83-39d0-405e-f00e-c21e6498a584?t=1697204642468",
+        location: "Roma",
+        size: "10 ettari",
+        cropType: "Colture miste (orticole/arboree)",
+        waterAvailability: "Sì",
+        author: "Proprietario Anonimo"
+    }
+];
+
+// Funzione modificata per includere l'autore in grassetto
+function createProjectCard(project) {
+    const card = document.createElement('div');
+    card.classList.add('card', 'p-6', 'text-left');
     
-    <section id="social-collaborations" class="section">
-        <div class="container text-center">
-            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8">
-                Collaborazioni per il Sociale
-            </h2>
-            <p class="text-gray-600 max-w-4xl mx-auto">
-                Uno dei nostri obiettivi è quello di destinare parte del nostro valore aggiunto creato verso realtà locali del Terzo Settore. 
-                bla bla bla
-            </p>
+    // Genera l'elemento per l'autore in grassetto
+    const authorDescription = project.author 
+        ? `<p class="text-gray-600 text-sm mb-1"><strong>${project.author}, scrive:</strong></p>`
+        : '';
+
+    card.innerHTML = `
+        <img src="${project.image}" alt="${project.name}" class="rounded-lg mb-4 w-full h-48 object-cover">
+        <div class="flex space-x-2 mb-3">
+            ${project.tags.map(tag => `<span class="pill ${tag.type}">${tag.label}</span>`).join('')}
         </div>
-    </section>
+        <h4 class="text-xl font-semibold text-green-800 mb-2">${project.name}</h4>
+        
+        ${authorDescription} <p class="text-gray-600 text-sm mb-4">${project.description}</p>
+        
+        <ul class="text-xs space-y-1 text-gray-500">
+            <li>📍 **Località:** ${project.location}</li>
+            <li>📏 **Superficie:** ${project.size}</li>
+            <li>💧 **Acqua:** ${project.waterAvailability}</li>
+            <li>🌾 **Coltura:** ${project.cropType}</li>
+        </ul>
+    `;
+    return card;
+}
+
+function createRipple(event) {
+    const button = event.currentTarget;
+    const circle = document.createElement('span');
+    const diameter = Math.max(button.clientWidth, button.clientHeight);
+    const radius = diameter / 2;
+    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.left = `${event.clientX - (button.offsetLeft + radius)}px`;
+    circle.style.top = `${event.clientY - (button.offsetTop + radius)}px`;
+    circle.classList.add('ripple-effect');
+    const ripple = button.getElementsByClassName('ripple-effect')[0];
+    if (ripple) {
+        ripple.remove();
+    }
+    button.appendChild(circle);
+}
+
+function typeWriterEffect(elementId, text, speed) {
+    const element = document.getElementById(elementId);
+    let i = 0;
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(type, speed);
+        }
+    }
+    type();
+}
+
+let currentSlide = 0;
+const projectsPerSlide = 3;
+
+function updateCarousel() {
+    const track = document.getElementById('carousel-track');
+    // Calcola il numero di slide basato su quanti progetti ci sono
+    const totalSlides = Math.ceil(sampleProjects.length / projectsPerSlide);
+    // Assicura che currentSlide sia un indice valido
+    currentSlide = (currentSlide % totalSlides + totalSlides) % totalSlides;
+    const offset = -currentSlide * 100;
+    track.style.transform = `translateX(${offset}%)`;
+}
+
+function createCarouselSlides() {
+    const track = document.getElementById('carousel-track');
+    track.innerHTML = '';
+    for (let i = 0; i < sampleProjects.length; i += projectsPerSlide) {
+        const slide = document.createElement('div');
+        slide.classList.add('carousel-slide');
+        for (let j = 0; j < projectsPerSlide && (i + j) < sampleProjects.length; j++) {
+            const card = createProjectCard(sampleProjects[i + j]);
+            slide.appendChild(card);
+        }
+        track.appendChild(slide);
+    }
+    // Dopo aver creato le slide, imposta la posizione iniziale
+    updateCarousel(); 
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const loadingOverlay = document.getElementById('loading-overlay');
+    loadingOverlay.classList.add('hidden');
+
+    createCarouselSlides(); // Crea e visualizza il carosello
+
+    const titleText = "Piattaforma di Riattivazione Territoriale";
+    document.getElementById('animated-title').textContent = '';
+    typeWriterEffect('animated-title', titleText, 50);
+
+    const sections = document.querySelectorAll('.section');
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    const allButtons = document.querySelectorAll('.btn');
+
+    const carouselNextBtn = document.getElementById('carousel-next-btn');
+    const carouselPrevBtn = document.getElementById('carousel-prev-btn');
     
-    <section id="policy" class="section bg-lime-50">
-        <div class="container text-center">
-            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8">
-                Servizi
-            </h2>
-            <p class="text-gray-600 max-w-4xl mx-auto">
-                Oltre al nostro sistema di matching, offriamo servizi di consulenza calmierati che aiutano i nostri soci a rimanere sempre aggiornati sulle opportunità economiche presenti sul nostro territorio. In particolare questi servizi riguardano:
-                <br>- Assistenza burocratica
-                <br>- Informativa sull'incentivazione locale
-                <br>- Intermediazione per la ricerca di servizi migliorativi
-                <br>- Collaborazioni con il mondo accademico agronomo
-            </p>
-        </div>
-    </section>
-    <section id="dashboard" class="section hidden">
-        <div class="container">
-            <h2 class="text-3xl sm:text-4xl font-bold text-emerald-800 mb-8 text-center">
-                La Tua Dashboard
-            </h2>
-            <div class="card p-6 md:p-8">
-                <div class="text-center mb-6">
-                    <p class="text-sm font-medium text-gray-500">Il tuo ID utente è:</p>
-                    <p id="user-id-display" class="text-sm font-bold text-gray-700 break-all"></p>
-                </div>
-                <div class="mb-8">
-                    <h3 class="text-xl font-semibold text-green-800 mb-4">Aggiungi un Nuovo Progetto</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <input id="project-name-input" type="text" placeholder="Nome del progetto" class="p-3 rounded-lg border-2 border-gray-300 input-field">
-                        <select id="project-status-input" class="p-3 rounded-lg border-2 border-gray-300 input-field">
-                            <option value="In Corso">In Corso</option>
-                            <option value="In Revisione">In Revisione</option>
-                            <option value="Completato">Completato</option>
-                        </select>
-                    </div>
-                    <textarea id="project-description-input" placeholder="Descrizione del progetto..." rows="4" class="w-full p-3 rounded-lg border-2 border-gray-300 input-field mb-4"></textarea>
-                    <input id="project-image-input" type="text" placeholder="URL immagine (opzionale)" class="w-full p-3 rounded-lg border-2 border-gray-300 input-field mb-4">
-                    <button id="add-project-btn" class="btn btn-primary w-full">Aggiungi Progetto</button>
-                </div>
-                <div>
-                    <h3 class="text-xl font-semibold mb-4 text-green-800">I Tuoi Progetti</h3>
-                    <div id="projects-list" class="space-y-4">
-                        <p class="text-gray-600 text-center">
-                            Nessun progetto trovato. Aggiungine uno!
-                        </p>
-                    </div>
-                </div>
-                <div class="mt-8">
-                    <h3 class="text-xl font-semibold text-green-800 mb-4">Notifiche e Commenti</h3>
-                    <div id="notifications-placeholder" class="p-4 bg-gray-100 rounded-lg text-gray-500 text-center">
-                        Funzionalità in arrivo! Qui vedrai aggiornamenti sui tuoi progetti e commenti dalla comunità.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <footer class="bg-gray-800 text-gray-200 py-8">
-        <div class="container text-center">
-            <p class="text-lg font-bold mb-2">terra.terra - Piattaforma per il recupero, la tutela e la valorizzazione dei terreni agricoli e rurali</p>
-            <p>&copy; 2025. Tutti i diritti riservati.</p>
-        </div>
-    </footer>
-    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-30">
-        <div class="bg-white rounded-xl p-8 max-w-sm w-full text-center">
-            <h3 class="text-2xl font-bold text-green-800 mb-4">Accesso Riuscito!</h3>
-            <p class="text-gray-600 mb-6">Sei stato autenticato come utente anonimo simulato. Ora puoi aggiungere e visualizzare progetti nella tua dashboard.</p>
-            <button id="close-modal-btn" class="btn btn-primary w-full">Inizia</button>
-        </div>
-    </div>
-    <div id="edit-modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h3 class="text-xl font-semibold mb-4 text-green-800">Modifica Progetto</h3>
-            <input id="edit-project-id" type="hidden">
-            <input id="edit-project-name" type="text" placeholder="Nome progetto" class="w-full p-3 rounded-lg border-2 border-gray-300 input-field mb-4">
-            <select id="edit-project-status" class="w-full p-3 rounded-lg border-2 border-gray-300 input-field mb-4">
-                <option value="In Corso">In Corso</option>
-                <option value="In Revisione">In Revisione</option>
-                <option value="Completato">Completato</option>
-            </select>
-            <textarea id="edit-project-description" placeholder="Descrizione progetto..." rows="4" class="w-full p-3 rounded-lg border-2 border-gray-300 input-field mb-4"></textarea>
-            <input id="edit-project-image" type="text" placeholder="URL immagine (opzionale)" class="w-full p-3 rounded-lg border-2 border-gray-300 input-field mb-4">
-            <button id="save-edit-btn" class="btn btn-primary w-full">Salva Modifiche</button>
-        </div>
-    </div>
-    <button id="back-to-top-btn" aria-label="Torna su">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-        </svg>
-    </button>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script>
-        let simulatedProjects = [];
-        let simulatedUserId = null;
-        let map;
+    // Aggiornamento listener carosello per usare la logica di updateCarousel
+    carouselNextBtn.addEventListener('click', () => {
+        currentSlide += 1;
+        updateCarousel();
+    });
+    
+    carouselPrevBtn.addEventListener('click', () => {
+        currentSlide -= 1;
+        updateCarousel();
+    });
 
-        function generateRandomId() {
-            return 'user-' + Math.random().toString(36).substring(2, 15);
-        }
-
-        function renderProjects() {
-            const projectsList = document.getElementById('projects-list');
-            projectsList.innerHTML = '';
-            if (simulatedProjects.length === 0) {
-                projectsList.innerHTML = `<p class="p-4 bg-gray-100 rounded-lg text-gray-600 text-center">Nessun progetto trovato. Aggiungine uno!</p>`;
-                return;
+    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.2 };
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in');
+                observer.unobserve(entry.target);
             }
-            simulatedProjects.forEach((project, index) => {
-                projectsList.appendChild(createYourProjectCard(project, index));
-            });
-        }
-
-        function createYourProjectCard(project, id) {
-            const card = document.createElement('div');
-            card.classList.add('p-4', 'bg-gray-100', 'rounded-lg', 'relative', 'group');
-            const timestamp = project.createdAt ? new Date(project.createdAt).toLocaleDateString() : 'Data non disponibile';
-            
-            const actionButtons = document.createElement('div');
-            actionButtons.classList.add('absolute', 'top-2', 'right-2', 'flex', 'space-x-2', 'opacity-0', 'group-hover:opacity-100', 'transition-opacity');
-            
-            const editBtn = document.createElement('button');
-            editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 hover:text-green-700" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zm-1.828 4.654a1 1 0 01-1.414 1.414l-4.828 4.828a1 1 0 01-1.414 0l-1.414-1.414a1 1 0 010-1.414l4.828-4.828a1 1 0 011.414-1.414l.707-.707a.5.5 0 01.707 0l2.828 2.828a.5.5 0 010 .707l-2.828 2.828zM3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg>`;
-            editBtn.onclick = () => openEditModal(id, project);
-            
-            const deleteBtn = document.createElement('button');
-            deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 hover:text-red-700" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>`;
-            deleteBtn.onclick = () => deleteProject(id);
-
-            actionButtons.appendChild(editBtn);
-            actionButtons.appendChild(deleteBtn);
-
-            card.innerHTML = `
-                <h4 class="font-bold text-green-700 text-lg mb-1">${project.name}</h4>
-                ${project.image ? `<img src="${project.image}" alt="${project.name}" class="rounded-lg mb-2 w-full max-h-48 object-cover">` : ''}
-                <p class="text-sm text-gray-600 mb-2">${project.description || 'Nessuna descrizione.'}</p>
-                <div class="flex items-center space-x-2 text-xs">
-                    <span class="font-medium text-gray-500">Stato: <span class="font-semibold text-green-800">${project.status || 'Non specificato'}</span></span>
-                    <span class="text-gray-400">•</span>
-                    <span class="font-medium text-gray-500">Aggiunto il: ${timestamp}</span>
-                </div>
-            `;
-            card.appendChild(actionButtons);
-            return card;
-        }
-
-        function deleteProject(id) {
-            if (confirm("Sei sicuro di voler eliminare questo progetto?")) {
-                simulatedProjects.splice(id, 1);
-                renderProjects();
-                alert("Progetto eliminato con successo.");
-            }
-        }
-        
-        function openEditModal(id, project) {
-            const editModal = document.getElementById('edit-modal');
-            document.getElementById('edit-project-id').value = id;
-            document.getElementById('edit-project-name').value = project.name;
-            document.getElementById('edit-project-status').value = project.status || 'In Corso';
-            document.getElementById('edit-project-description').value = project.description || '';
-            document.getElementById('edit-project-image').value = project.image || '';
-            editModal.style.display = 'flex';
-        }
-
-        function saveEdit() {
-            const id = document.getElementById('edit-project-id').value;
-            const newName = document.getElementById('edit-project-name').value;
-            const newStatus = document.getElementById('edit-project-status').value;
-            const newDescription = document.getElementById('edit-project-description').value;
-            const newImage = document.getElementById('edit-project-image').value;
-
-            if (newName.trim() === "") {
-                alert("Il nome del progetto non può essere vuoto.");
-                return;
-            }
-
-            simulatedProjects[id] = {
-                ...simulatedProjects[id],
-                name: newName,
-                status: newStatus,
-                description: newDescription,
-                image: newImage,
-                updatedAt: new Date().toISOString()
-            };
-            
-            renderProjects();
-            alert("Progetto aggiornato con successo.");
-            document.getElementById('edit-modal').style.display = 'none';
-        }
-
-        const sampleProjects = [
-            {
-                name: "Orto urbano e Giardino aromatico",
-                description: "<b>Paolo scrive:</b> <br> “Per motivi di trasferimento, cerco qualcuno che voglia dare continuità alla mia piccola coltivazione urbana. L'orto è già avviato, con piante aromatiche e qualche albero di frutto. Mi piacere che restasse un luogo vivo e curato”",
-                tags: [{ label: "Sociale", type: "s" }, { label: "Ambientale", type: "e" }],
-                image: "https://i.postimg.cc/9XqqG82g/rende.jpg",
-                coords: [39.3087, 16.3155],
-                location: "Rende (CS), Calabria",
-                size: "500 mq",
-                cropType: "Colture miste (orticole)",
-                waterAvailability: "Sì, con pozzo"
-            },
-            {
-                name: "Vigneto collinare con varietà Magliocco",
-                description: "<b>Luigi scrive:</b> <br>“Vivo all’estero da diversi anni, e con il passare del tempo, mi è sempre più difficile occuparmi della mia campagna. Sono molto legato a questo terreno e mi piacerebbe che tornasse ad essere pienamente attivo, valorizzando la tradizione vitivinicola locale.”",
-                tags: [{ label: "Ambientale", type: "e" }, { label: "Governance", type: "g" }],
-                image: "https://i.postimg.cc/yYcczfrN/moranocalabro-2.jpg",
-                coords: [39.7719, 16.1557],
-                location: "Morano Calabro (CS), Calabria",
-                size: "1 ettaro",
-                cropType: "Parzialmente coltivato",
-                waterAvailability: "Sì"
-            },
-            {
-                name: "Bosco colto con prevalenza di pino laricio",
-                description: "<b>Carmelo scrive:</b> <br>“Per motivi di distanza e mancanza di tempo riesco a recarmi raramente al bosco. Mi piacere metterlo a disposizione di qualcuno interessato all’apicoltura o ad attiva di gestione sostenibile del sottobosco, così che questo luogo possa continuare a produrre valore”",
-                tags: [{ label: "Ambientale", type: "e" }, { label: "Sociale", type: "s" }],
-                image: "https://i.postimg.cc/zfcVhWc8/sangiovan.jpg",
-                coords: [39.2974, 16.2483],
-                location: "San Giovanni in Fiore (CS), Calabria",
-                size: "1 ettaro",
-                cropType: "Bosco e alberi da frutto, con specie autoctone",
-                waterAvailability: "No"
-            },
-            {
-                name: "Terreno costiero con frutteto di cedri",
-                description: "<b>Angela scrive:</b> <br>“Sono ormai anziana e senza eredi mi piacerebbe che qualcuno si prendesse cura dei miei alberi da cedro, continuando a farli crescere e magari piantando nuove varietà”",
-                tags: [{ label: "Sociale", type: "s" }, { label: "Ambientale", type: "e" }],
-                image: "https://i.postimg.cc/k4YDxS1Y/diamante.jpg",
-                coords: [39.6738, 15.8236],
-                location: "Diamante (CS), Calabria",
-                size: "2 ettari",
-                cropType: "Prevalentemente cedro",
-                waterAvailability: "Sì, con pozzo"
-            }
-        ];
-
-        function createProjectCard(project) {
-            const card = document.createElement('div');
-            card.classList.add('card', 'p-6');
-            card.innerHTML = `
-                <img src="${project.image}" alt="${project.name}" class="rounded-lg mb-4 w-full h-auto object-cover">
-                <div class="flex space-x-2 mb-2">
-                    ${project.tags.map(tag => `<span class="pill ${tag.type}">${tag.label}</span>`).join('')}
-                </div>
-                <h4 class="text-xl font-semibold text-green-800 mb-2">${project.name}</h4>
-                <p class="text-gray-600 text-sm">${project.description}</p>
-            `;
-            return card;
-        }
-
-        function createRipple(event) {
-            const button = event.currentTarget;
-            const circle = document.createElement('span');
-            const diameter = Math.max(button.clientWidth, button.clientHeight);
-            const radius = diameter / 2;
-            circle.style.width = circle.style.height = `${diameter}px`;
-            circle.style.left = `${event.clientX - (button.offsetLeft + radius)}px`;
-            circle.style.top = `${event.clientY - (button.offsetTop + radius)}px`;
-            circle.classList.add('ripple-effect');
-            const ripple = button.getElementsByClassName('ripple-effect')[0];
-            if (ripple) {
-                ripple.remove();
-            }
-            button.appendChild(circle);
-        }
-
-        function typeWriterEffect(elementId, text, speed) {
-            const element = document.getElementById(elementId);
-            let i = 0;
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, speed);
-                }
-            }
-            type();
-        }
-
-        let currentSlide = 0;
-        const projectsPerSlide = 3;
-        function updateCarousel() {
-            const track = document.getElementById('carousel-track');
-            const totalSlides = Math.ceil(sampleProjects.length / projectsPerSlide);
-            const offset = -currentSlide * 100;
-            track.style.transform = `translateX(${offset}%)`;
-        }
-
-        function createCarouselSlides() {
-            const track = document.getElementById('carousel-track');
-            track.innerHTML = '';
-            for (let i = 0; i < sampleProjects.length; i += projectsPerSlide) {
-                const slide = document.createElement('div');
-                slide.classList.add('carousel-slide');
-                for (let j = 0; j < projectsPerSlide && (i + j) < sampleProjects.length; j++) {
-                    const card = createProjectCard(sampleProjects[i + j]);
-                    slide.appendChild(card);
-                }
-                track.appendChild(slide);
-            }
-        }
-        
-        function initMap() {
-            const mapContainer = document.getElementById('map');
-            if (!mapContainer) {
-                return;
-            }
-
-            map = L.map('map');
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            const projectCoords = [];
-            sampleProjects.forEach(project => {
-                const marker = L.marker(project.coords).addTo(map);
-                
-                // Creazione del contenuto HTML per il popup
-                const popupContent = `
-                    <div style="font-family: 'Inter', sans-serif;">
-                        <h4 style="font-weight: 600; font-size: 1.1rem; color: #1a5e3a; margin-bottom: 0.5rem;">${project.name}</h4>
-                        <p style="margin-bottom: 0.75rem;">${project.description}</p>
-                        <hr style="border-top: 1px solid #e2e8f0; margin-bottom: 0.75rem;">
-                        <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.5;">
-                            <li><strong>Dove si trova?</strong> ${project.location}</li>
-                            <li><strong>Dimensione:</strong> ${project.size}</li>
-                            <li><strong>Tipologia di coltura:</strong> ${project.cropType}</li>
-                            <li><strong>Disponibilità acqua:</strong> ${project.waterAvailability}</li>
-                        </ul>
-                    </div>
-                `;
-
-                marker.bindPopup(popupContent);
-                projectCoords.push(project.coords);
-
-                // Aggiungi il listener di click al marker per zoommare
-                marker.on('click', () => {
-                    map.flyTo(project.coords, 13, {
-                        animate: true,
-                        duration: 1.5
-                    });
-                });
-            });
-
-            if (projectCoords.length > 0) {
-                const bounds = L.latLngBounds(projectCoords);
-                map.fitBounds(bounds, { padding: [50, 50] }); 
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const loadingOverlay = document.getElementById('loading-overlay');
-            loadingOverlay.classList.add('hidden');
-            
-            createCarouselSlides();
-            
-            const titleText = "Piattaforma terra.terra";
-            document.getElementById('animated-title').textContent = '';
-            typeWriterEffect('animated-title', titleText, 50);
-
-            const sections = document.querySelectorAll('.section');
-            const loginBtn = document.getElementById('login-btn');
-            const loginModal = document.getElementById('login-modal');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            const addProjectBtn = document.getElementById('add-project-btn');
-            const projectNameInput = document.getElementById('project-name-input');
-            const projectDescriptionInput = document.getElementById('project-description-input');
-            const projectStatusInput = document.getElementById('project-status-input');
-            const projectImageInput = document.getElementById('project-image-input');
-            const backToTopBtn = document.getElementById('back-to-top-btn');
-            const allButtons = document.querySelectorAll('.btn');
-            const editModal = document.getElementById('edit-modal');
-            const saveEditBtn = document.getElementById('save-edit-btn');
-            const editModalCloseBtn = editModal.querySelector('.modal-close');
-            const dashboardSection = document.getElementById('dashboard');
-            
-            const carouselNextBtn = document.getElementById('carousel-next-btn');
-            const carouselPrevBtn = document.getElementById('carousel-prev-btn');
-            const totalSlides = Math.ceil(sampleProjects.length / projectsPerSlide);
-
-            carouselNextBtn.addEventListener('click', () => {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                updateCarousel();
-            });
-
-            carouselPrevBtn.addEventListener('click', () => {
-                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                updateCarousel();
-            });
-
-            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.2 };
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
-
-            sections.forEach(section => observer.observe(section));
-
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 300) {
-                    backToTopBtn.classList.add('is-visible');
-                } else {
-                    backToTopBtn.classList.remove('is-visible');
-                }
-            });
-
-            backToTopBtn.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-
-            loginBtn.addEventListener('click', () => {
-                simulatedUserId = generateRandomId();
-                document.getElementById('user-id-display').textContent = simulatedUserId;
-                loginModal.classList.remove('hidden');
-                loginModal.classList.add('flex');
-            });
-
-            closeModalBtn.addEventListener('click', () => {
-                loginModal.classList.add('hidden');
-                loginModal.classList.remove('flex');
-                dashboardSection.classList.remove('hidden');
-                document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' });
-                renderProjects();
-            });
-
-            editModalCloseBtn.addEventListener('click', () => {
-                editModal.style.display = 'none';
-            });
-
-            saveEditBtn.addEventListener('click', saveEdit);
-
-            addProjectBtn.addEventListener('click', () => {
-                const projectName = projectNameInput.value.trim();
-                const projectDescription = projectDescriptionInput.value.trim();
-                const projectStatus = projectStatusInput.value;
-                const projectImage = projectImageInput.value.trim();
-
-                if (projectName === "") {
-                    alert("Il nome del progetto non può essere vuoto.");
-                    return;
-                }
-                
-                const newProject = {
-                    name: projectName,
-                    description: projectDescription,
-                    status: projectStatus,
-                    image: projectImage,
-                    createdAt: new Date().toISOString()
-                };
-                simulatedProjects.push(newProject);
-                
-                renderProjects();
-                
-                projectNameInput.value = "";
-                projectDescriptionInput.value = "";
-                projectImageInput.value = "";
-            });
-
-            allButtons.forEach(button => {
-                button.addEventListener('click', createRipple);
-            });
-            
-            initMap();
         });
-    </script>
+    }, observerOptions);
+
+    sections.forEach(section => observer.observe(section));
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            backToTopBtn.classList.add('is-visible');
+        } else {
+            backToTopBtn.classList.remove('is-visible');
+        }
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    allButtons.forEach(button => {
+        button.addEventListener('click', createRipple);
+    });
+});
+</script>
 </body>
 </html>
